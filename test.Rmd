@@ -1,0 +1,54 @@
+---
+title: "visualization"
+author: "rj2543"
+date: "2/29/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(ggplot2)
+```
+
+```{r data load}
+data(mpg)
+mpg
+```
+
+## Aesthetic
+
+```{r aes}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = "blue"))
+  
+mpg %>% 
+  ggplot() +
+  geom_point(aes(x = displ, y = hwy), color = "blue")
+
+# mpg %>% 
+#   ggplot() + 
+#   geom_point(aes(x = displ, y = hwy, shape = cty))
+# Error: A continuous variable can not be mapped to shape
+
+mpg %>% 
+  ggplot() +
+  geom_point(aes(x = displ, y = hwy, color = cty))
+
+mpg %>% 
+  ggplot() +
+  geom_point(aes(x = displ, y = hwy, size = cty))
+
+mpg %>% 
+  ggplot() +
+  geom_point(aes(x = displ, y = hwy, color = cty, size = cty))
+
+mpg %>% 
+  ggplot() + 
+  geom_point(aes(x = displ, y = hwy, colour = displ < 5))
+
+?geom_point
+vignette("ggplot2-specs")
+# The "munsell" package makes it easy to specific colours using a system designed by Alfred Munsell. If you invest a little in learning the system, it provides a convenient way of specifying aesthetically pleasing colours.
+
+```
+
