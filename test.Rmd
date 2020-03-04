@@ -46,9 +46,40 @@ mpg %>%
   ggplot() + 
   geom_point(aes(x = displ, y = hwy, colour = displ < 5))
 
-?geom_point
-vignette("ggplot2-specs")
+# ?geom_point
+# vignette("ggplot2-specs")
 # The "munsell" package makes it easy to specific colours using a system designed by Alfred Munsell. If you invest a little in learning the system, it provides a convenient way of specifying aesthetically pleasing colours.
+```
 
+## facets
+
+One way to add additional variables is with aesthetics. Another way, particularly useful for categorical variables, is to split your plot into facets, subplots that each display one subset of the data.
+
+```{r facet}
+# To facet your plot by a single variable, use facet_wrap(). The variable that you pass to facet_wrap() should be discrete.
+
+mpg %>% 
+  ggplot() + 
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_wrap(~ class, nrow = 3)
+
+# To facet your plot on the combination of two variables, add facet_grid() to your plot call. The first argument of facet_grid() is also a formula. This time the formula should contain two variable names separated by a ~.
+
+mpg %>% 
+  ggplot() +
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_grid(drv ~ cyl)
+
+mpg %>% 
+  ggplot() +
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_grid(. ~ cyl)
+
+mpg %>% 
+  ggplot() +
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_grid(drv ~ .)
+
+# When using facet_grid() you should usually put the variable with more unique levels in the columns.
 ```
 
