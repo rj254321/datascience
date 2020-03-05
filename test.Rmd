@@ -51,7 +51,7 @@ mpg %>%
 # The "munsell" package makes it easy to specific colours using a system designed by Alfred Munsell. If you invest a little in learning the system, it provides a convenient way of specifying aesthetically pleasing colours.
 ```
 
-## facets
+## Facets
 
 One way to add additional variables is with aesthetics. Another way, particularly useful for categorical variables, is to split your plot into facets, subplots that each display one subset of the data.
 
@@ -81,5 +81,26 @@ mpg %>%
   facet_grid(drv ~ .)
 
 # When using facet_grid() you should usually put the variable with more unique levels in the columns.
+```
+
+## Geometric objects
+
+```{r geom}
+mpg %>% 
+  ggplot() + 
+  geom_smooth(mapping = aes(x = displ, y = hwy, linetype = drv))
+
+# In practice, ggplot2 will automatically group the data for these geoms whenever you map an aesthetic to a discrete variable (as in the linetype example). It is convenient to rely on this feature because the group aesthetic by itself does not add a legend or distinguishing features to the geoms.
+
+mpg %>% 
+  ggplot() + 
+  geom_smooth(mapping = aes(x = displ, y = hwy, color = drv),
+              show.legend = F)
+
+# If you place mappings in a geom function, ggplot2 will treat them as local mappings for the layer. It will use these mappings to extend or overwrite the global mappings for that layer only. This makes it possible to display different aesthetics in different layers.
+
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point(mapping = aes(color = class)) + 
+  geom_smooth(data = filter(mpg, class == "subcompact"), se = FALSE)
 ```
 
