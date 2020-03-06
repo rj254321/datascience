@@ -144,5 +144,11 @@ ggplot(data = diamonds) +
     fun.ymax = max,
     fun.y = median
   )
+
+?stat_summary
+?geom_col # geom_bar() makes the height of the bar proportional to the number of cases in each group (or if the weight aesthetic is supplied, the sum of the weights). If you want the heights of the bars to represent values in the data, use geom_col() instead. geom_bar() uses stat_count() by default: it counts the number of cases at each x position. geom_col() uses stat_identity(): it leaves the data as is.
+?stat_smooth
+?geom_bar
+vignette("ggplot2-specs")
 ```
 
