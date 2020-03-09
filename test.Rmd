@@ -246,4 +246,16 @@ ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
   coord_fixed()
 ```
 
+## Layered grammar of graphics
+
+ggplot(data = <DATA>) + 
+  <GEOM_FUNCTION>(
+     mapping = aes(<MAPPINGS>),
+     stat = <STAT>, 
+     position = <POSITION>
+  ) +
+  <COORDINATE_FUNCTION> +
+  <FACET_FUNCTION>
+  
+
 
