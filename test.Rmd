@@ -256,6 +256,24 @@ ggplot(data = <DATA>) +
   ) +
   <COORDINATE_FUNCTION> +
   <FACET_FUNCTION>
-  
 
+## Work flow
+
+Don’t be lazy and use =: it will work, but it will cause confusion later. Instead, use RStudio’s keyboard shortcut: Alt + - (the minus sign). 
+
+```{r}
+# This common action can be shortened by surrounding the assignment with parentheses, which causes assignment and “print to screen” to happen.
+
+(y <- seq(1, 10, length.out = 5))
+
+library(tidyverse)
+
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy))
+
+filter(mpg, cyl == 8)
+filter(diamonds, carat > 3)
+
+# Press Alt + Shift + K. Keyboard Shortcut Quick Reference
+```
 
