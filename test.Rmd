@@ -339,3 +339,27 @@ NA * 0 # NA
 # Missing values are always sorted at the end.
 ```
 
+```{r select}
+flights %>% 
+  select(-(year:day))
+
+# starts_with("abc"): matches names that begin with “abc”.
+# ends_with("xyz"): matches names that end with “xyz”.
+# contains("ijk"): matches names that contain “ijk”.
+# matches("(.)\\1"): selects variables that match a regular expression. This one matches any variables that contain repeated characters. 
+# num_range("x", 1:3): matches x1, x2 and x3.
+# one_of(): Matches variable names in a character vector.
+# everything(): if you have a handful of variables you’d like to move to the start of the data frame.
+# last_col(): Select last variable, possibly with an offset.
+
+vars <- c("year", "month", "day", "dep_delay", "arr_delay")
+flights %>% 
+  select(one_of(vars))
+
+flights %>% 
+  select(contains("TIME")) # default in the contains() helper is: ignore.case = TRUE
+
+flights %>% 
+  select(contains("TIME", ignore.case = FALSE))
+```
+
