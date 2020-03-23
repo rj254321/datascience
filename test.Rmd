@@ -363,3 +363,46 @@ flights %>%
   select(contains("TIME", ignore.case = FALSE))
 ```
 
+```{r mutate}
+# you can refer to columns that you’ve just created
+# If you only want to keep the new variables, use transmute():
+transmute(flights,
+  gain = dep_delay - arr_delay,
+  hours = air_time / 60,
+  gain_per_hour = gain / hours
+)
+
+# Modular arithmetic: %/% (integer division) and %% (remainder), where x == y * (x %/% y) + (x %% y).
+transmute(flights,
+  dep_time,
+  hour = dep_time %/% 100,
+  minute = dep_time %% 100
+)
+
+# Offsets: lead() and lag() allow you to refer to leading or lagging values. This allows you to compute running differences (e.g. x - lag(x)) or find when values change (x != lag(x)). They are most useful in conjunction with group_by().
+(x <- 1:10)
+lag(x) # previous
+lead(x) # next
+
+# Cumulative and rolling aggregates: R provides functions for running sums, products, mins and maxes: cumsum(), cumprod(), cummin(), cummax(); and dplyr provides cummean() for cumulative means. If you need rolling aggregates (i.e. a sum computed over a rolling window), try the RcppRoll package.
+# what is "a rolling window"?
+cumsum(x)
+cummean(x)
+
+# Ranking: min_rank() does the most usual type of ranking (e.g. 1st, 2nd, 2nd, 4th). The default gives smallest values the small ranks; use desc(x) to give the largest values the smallest ranks.
+y <- c(1, 2, 2, NA, 3, 4)
+min_rank(y)
+min_rank(desc(y))
+
+row_number(y)
+dense_rank(y)
+percent_rank(y)
+cume_dist(y)
+# ntile(y)
+
+flights %>% 
+  transmute(air_time, arr_time - dep_time)
+flights %>% 
+  transmute(air_time, arr_time - dep_time, (arr_time %/% 100 * 60 + arr_time %% 100) - (dep_time %/% 100 * 60 + dep_time %% 100))
+```
+
