@@ -406,3 +406,11 @@ flights %>%
   transmute(air_time, arr_time - dep_time, (arr_time %/% 100 * 60 + arr_time %% 100) - (dep_time %/% 100 * 60 + dep_time %% 100))
 ```
 
+```{r summarise}
+# grouped summaries: It collapses a data frame to a single row
+
+# Whenever you do any aggregation, it’s always a good idea to include either a count (n()), or a count of non-missing values (sum(!is.na(x))). That way you can check that you’re not drawing conclusions based on very small amounts of data.
+
+
+```
+
