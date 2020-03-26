@@ -411,6 +411,18 @@ flights %>%
 
 # Whenever you do any aggregation, it’s always a good idea to include either a count (n()), or a count of non-missing values (sum(!is.na(x))). That way you can check that you’re not drawing conclusions based on very small amounts of data.
 
+# median absolute deviation: mad(x)
+
+# Measures of position: first(x), nth(x, 2), last(x). These work similarly to x[1], x[2], and x[length(x)]
+
+# To count the number of distinct (unique) values, use n_distinct(x).
+
+# You can optionally provide a weight variable. For example, you could use this to “count” (sum) the total number of miles a plane flew:
+flights %>% 
+  count(tailnum, wt = distance)
+
+# Counts and proportions of logical values: sum(x > 10), mean(y == 0). When used with numeric functions, TRUE is converted to 1 and FALSE to 0. sum(x) gives the number of TRUEs in x, and mean(x) gives the proportion.
+
 
 ```
 
