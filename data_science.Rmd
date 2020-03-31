@@ -388,5 +388,21 @@ ggplot(diamonds) +
 # Instead of dropping the entire observation/row with the strange values, replace the unusual values with missing values. The easiest way to do this is to use mutate() to replace the variable with a modified copy. You can use the ifelse() function to replace unusual values with NA:
 diamonds2 <- diamonds %>% 
   mutate(y = ifelse(y < 3 | y > 20, NA, y))
+
+flights %>% 
+  transmute(
+    cancelled = is.na(dep_time),
+    sched_hour = sched_dep_time %/% 100,
+    sched_min = sched_dep_time %% 100,
+    sched_dep_time = sched_hour + sched_min / 60
+  ) %>% 
+  ggplot(mapping = aes(x = sched_dep_time)) + 
+    geom_histogram(mapping = aes(fill = cancelled), binwidth = 1/4)
+
+flights %>% 
+  transmute(cancelled = is.na(dep_time),
+            sched_dep_time = (sched_dep_time %/% 100) + (sched_dep_time %% 100)/60) %>% 
+  ggplot(mapping = aes(x = sched_dep_time)) + 
+  geom_freqpoly(mapping = aes(color = cancelled), binwidth = 1/4)
 ```
 
