@@ -11,6 +11,7 @@ library(ggplot2)
 library(maps)
 library(mapproj)
 library(nycflights13)
+library(lvplot)
 ```
 
 ```{r data load}
@@ -404,5 +405,39 @@ flights %>%
             sched_dep_time = (sched_dep_time %/% 100) + (sched_dep_time %% 100)/60) %>% 
   ggplot(mapping = aes(x = sched_dep_time)) + 
   geom_freqpoly(mapping = aes(color = cancelled), binwidth = 1/4)
+```
+
+## Covariation
+
+If variation describes the behavior within a variable, covariation describes the behavior between variables. 
+Covariation is the tendency for the values of two or more variables to vary together in a related way. 
+The best way to spot covariation is to visualise the relationship between two or more variables.
+
+```{r categorical and continuous}
+# Instead of displaying count, we’ll display density, which is the count standardised so that the area under each frequency polygon is one.
+diamonds %>% 
+  ggplot(mapping = aes(x = price, y = ..density..)) +
+  geom_freqpoly(mapping = aes(color = cut), binwidth = 500)
+
+# IQR. In the middle of the box is a line that displays the median. These three lines give you a sense of the spread of the distribution and whether or not the distribution is symmetric about the median or skewed to one side.
+# Visual points that display observations that fall more than 1.5 times the IQR from either edge of the box. These outlying points are unusual so are plotted individually.
+# A line (or whisker) that extends from each end of the box and goes to the farthest non-outlier point in the distribution.
+
+ggplot(data = mpg) +
+  geom_boxplot(mapping = aes(x = reorder(class, hwy, FUN = median), y = hwy))
+ggplot(data = mpg) +
+  geom_boxplot(mapping = aes(x = reorder(class, hwy, FUN = median), y = hwy)) +
+  coord_flip() # if variable names are long
+
+# For large datasets (10,000 - 100,000), the letter-value box plot addresses both these shortcomings: it conveys more detailed information in the tails using letter values, only out to the depths where the letter values are reliable estimates of their corresponding quantiles (corresponding to tail areas of roughly 2^{-i}); “outliers” are defined as a function of the most extreme letter value shown.
+diamonds %>% 
+  ggplot(mapping = aes(x = cut, y = price)) + 
+  geom_lv(mapping = aes(fill = cut))
+
+ggplot(data = mpg) +
+  geom_violin(mapping = aes(x = reorder(class, hwy, FUN = median), y = hwy, fill = class))
+
+ggplot(data = mpg) +
+  geom_jitter(mapping = aes(x = reorder(class, hwy, FUN = median), y = hwy, color = class), alpha = 0.4)
 ```
 
