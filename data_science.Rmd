@@ -356,3 +356,29 @@ vignette("window-functions")
 # A window function is a variation on an aggregation function. Where an aggregation function, like sum() and mean(), takes n inputs and return a single value, a window function returns n values. The output of a window function depends on all its input values, so window functions don’t include functions that work element-wise, like + or round(). Window functions include variations on aggregate functions, like cumsum() and cummean(), functions for ranking and ordering, like rank(), and functions for taking offsets, like lead() and lag().
 # lead() and lag() have an optional argument order_by. If set, instead of using the row order to determine which value comes before another, they will use another variable. This is important if you have not already sorted the data, or you want to sort one way and lag another.
 ```
+
+# Exploratory Data Analysis
+
+## Variation
+
+```{r variation}
+diamonds %>% 
+  count(cut_width(carat, 0.5))
+
+smaller <- diamonds %>% 
+  filter(carat < 3)
+smaller %>% 
+  ggplot(aes(x = carat, color = cut)) +
+  geom_freqpoly(binwidth = 0.1)
+
+smaller %>% 
+  ggplot(aes(x = carat)) + 
+  geom_histogram(binwidth = 0.01)
+
+# outlier: To make it easy to see the unusual values, we need to zoom to small values of the y-axis with coord_cartesian()
+ggplot(diamonds) + 
+  geom_histogram(mapping = aes(x = y), binwidth = 0.5) + # count:0 - 12000
+  coord_cartesian(ylim = c(0, 50))
+# It’s good practice to repeat your analysis with and without the outliers. If they have minimal effect on the results, and you can’t figure out why they’re there, it’s reasonable to replace them with missing values, and move on. However, if they have a substantial effect on your results, you shouldn’t drop them without justification. You’ll need to figure out what caused them (e.g. a data entry error) and disclose that you removed them in your write-up.
+```
+
