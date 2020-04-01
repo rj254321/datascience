@@ -482,3 +482,9 @@ ggplot(data = diamonds) +
   coord_cartesian(xlim = c(4, 11), ylim = c(4, 11)) # zoom
 ```
 
+## Patterns and models
+
+```{r patterns and models}
+
+```
+
