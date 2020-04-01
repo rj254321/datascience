@@ -12,6 +12,7 @@ library(maps)
 library(mapproj)
 library(nycflights13)
 library(lvplot)
+library(hexbin)
 ```
 
 ```{r data load}
@@ -413,7 +414,7 @@ If variation describes the behavior within a variable, covariation describes the
 Covariation is the tendency for the values of two or more variables to vary together in a related way. 
 The best way to spot covariation is to visualise the relationship between two or more variables.
 
-```{r categorical and continuous}
+```{r categorical vs continuous}
 # Instead of displaying count, we’ll display density, which is the count standardised so that the area under each frequency polygon is one.
 diamonds %>% 
   ggplot(mapping = aes(x = price, y = ..density..)) +
@@ -439,5 +440,45 @@ ggplot(data = mpg) +
 
 ggplot(data = mpg) +
   geom_jitter(mapping = aes(x = reorder(class, hwy, FUN = median), y = hwy, color = class), alpha = 0.4)
+```
+
+```{r categorical vs categorical}
+# To visualise the covariation between categorical variables, you’ll need to count the number of observations for each combination.
+# Covariation will appear as a strong correlation between specific x values and specific y values.
+diamonds %>% 
+  ggplot() +
+  geom_count(mapping = aes(x = cut, y = color))
+
+diamonds %>% 
+  count(color, cut) %>%  
+  ggplot(mapping = aes(x = color, y = cut)) +
+  geom_tile(mapping = aes(fill = n))
+
+flights %>% 
+  mutate(month = factor(month)) %>%
+  group_by(dest, month) %>% 
+  summarise(mean_delay = mean(arr_delay)) %>% 
+  ggplot(mapping = aes(x = dest, y = month)) +
+  geom_tile(mapping = aes(fill = mean_delay), na.rm = T)
+```
+
+```{r continuous vs continuous}
+# geom_bin2d() and geom_hex() divide the coordinate plane into 2d bins and then use a fill color to display how many points fall into each bin. geom_bin2d() creates rectangular bins. geom_hex() creates hexagonal bins. You will need to install the hexbin package to use geom_hex().
+ggplot(data = smaller) +
+  geom_bin2d(mapping = aes(x = carat, y = price))
+ggplot(data = smaller) +
+  geom_hex(mapping = aes(x = carat, y = price))
+
+# Another option is to bin one continuous variable so it acts like a categorical variable.
+ggplot(data = smaller, mapping = aes(x = carat, y = price)) + 
+  geom_boxplot(mapping = aes(group = cut_width(carat, 0.1)), varwidth = T) # divide carat into bins of width = 0.1; make the width of the boxplot proportional to the number of points
+
+ggplot(data = smaller, mapping = aes(x = carat, y = price)) + 
+  geom_boxplot(mapping = aes(group = cut_number(carat, 20))) # display approximately the same number of points in each bin
+
+# Two dimensional plots reveal outliers that are not visible in one dimensional plots. For example, some points in the plot below have an unusual combination of x and y values, which makes the points outliers even though their x and y values appear normal when examined separately.
+ggplot(data = diamonds) +
+  geom_point(mapping = aes(x = x, y = y)) +
+  coord_cartesian(xlim = c(4, 11), ylim = c(4, 11)) # zoom
 ```
 
