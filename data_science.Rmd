@@ -13,6 +13,7 @@ library(mapproj)
 library(nycflights13)
 library(lvplot)
 library(hexbin)
+library(modelr)
 ```
 
 ```{r data load}
@@ -485,6 +486,16 @@ ggplot(data = diamonds) +
 ## Patterns and models
 
 ```{r patterns and models}
+#  The residuals give us a view of the price of the diamond, once the effect of carat has been removed.
 
+mod <- lm(log(price) ~ log(carat), data = diamonds)
+
+diamonds2 <- diamonds %>% 
+  add_residuals(mod) %>% 
+  mutate(resid = exp(resid))
+
+# Once you’ve removed the strong relationship between carat and price, you can see what you expect in the relationship between cut and price: relative to their size, better quality diamonds are more expensive.
+ggplot(data = diamonds2) + 
+  geom_boxplot(mapping = aes(x = cut, y = resid))
 ```
 
