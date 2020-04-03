@@ -528,6 +528,21 @@ flights %>%
 ?tibble::enframe() # convert named atomic vectors or lists to one- or two-column data frames
 ```
 
+# Data import
 
+```{r}
+# read_csv() reads comma delimited files, read_csv2() reads semicolon separated files (common in countries where , is used as the decimal place), read_tsv() reads tab delimited files, and read_delim() reads in files with any delimiter.
 
+# Sometimes there are a few lines of metadata at the top of the file. You can use skip = n to skip the first n lines; or use comment = "#" to drop all lines that start with (e.g.) #.
+read_csv(
+  "# The first line of metadata
+  # The second line of metadata
+  x,y,z
+  1,2,3", 
+  comment = "#")
+
+# na: this specifies the value (or values) that are used to represent missing values in your file
+read_csv("a, b, c \n 1, 2, .", na = ".")
+
+```
 
