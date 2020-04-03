@@ -501,8 +501,31 @@ ggplot(data = diamonds2) +
 
 # Tibbles
 
-```{r }
+```{r tibble}
+vignette("tibble")
 
+as_tibble()
+
+# tibble() will automatically recycle inputs of length 1, and allows you to refer to variables that you just created.
+tibble(
+  x = 1:5, 
+  y = 1, 
+  z = x ^ 2 + y
+)
+
+# transposed tibble: tribble() is customised for data entry in code: column headings are defined by formulas (i.e. they start with ~), and entries are separated by commas. This makes it possible to lay out small amounts of data in easy-to-read form.
+tribble(
+  ~x, ~y, ~z,
+  #--|--|----
+  "a", 2, 3.6,
+  "b", 1, 8.5
+)
+
+# First, you can explicitly print() the data frame and control the number of rows (n) and the width of the display. width = Inf will display all columns:
+flights %>% 
+  print(n = 10, width = Inf)
+
+?tibble::enframe() # convert named atomic vectors or lists to one- or two-column data frames
 ```
 
 
