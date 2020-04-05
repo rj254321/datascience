@@ -530,7 +530,7 @@ flights %>%
 
 # Data import
 
-```{r}
+```{r intro}
 # read_csv() reads comma delimited files, read_csv2() reads semicolon separated files (common in countries where , is used as the decimal place), read_tsv() reads tab delimited files, and read_delim() reads in files with any delimiter.
 
 # Sometimes there are a few lines of metadata at the top of the file. You can use skip = n to skip the first n lines; or use comment = "#" to drop all lines that start with (e.g.) #.
@@ -543,6 +543,12 @@ read_csv(
 
 # na: this specifies the value (or values) that are used to represent missing values in your file
 read_csv("a, b, c \n 1, 2, .", na = ".")
+```
 
+```{r parse}
+# parse_*() functions take a character vector and return a more specialised vector like a logical, integer, or date
+str(parse_logical(c("TRUE", "FALSE", "NA")))
+str(parse_integer(c("1", "2", "3")))
+str(parse_date(c("2010-01-01", "1979-10-14")))
 ```
 
