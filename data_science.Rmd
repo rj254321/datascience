@@ -14,6 +14,7 @@ library(nycflights13)
 library(lvplot)
 library(hexbin)
 library(modelr)
+library(hms)
 ```
 
 ```{r data load}
@@ -550,5 +551,14 @@ read_csv("a, b, c \n 1, 2, .", na = ".")
 str(parse_logical(c("TRUE", "FALSE", "NA")))
 str(parse_integer(c("1", "2", "3")))
 str(parse_date(c("2010-01-01", "1979-10-14")))
+
+parse_double("1,23", locale = locale(decimal_mark = ","))
+
+# parse_number() ignores non-numeric characters before and after the number. This is particularly useful for currencies and percentages, but also works to extract numbers embedded in text.
+parse_number("$100")
+parse_number("20%")
+parse_number("It cost $123.45.")
+parse_number("$123,456,789") # ignore the grouping mark
+
 ```
 
