@@ -560,5 +560,37 @@ parse_number("20%")
 parse_number("It cost $123.45.")
 parse_number("$123,456,789") # ignore the grouping mark
 
+challenge <- read_csv(
+  readr_example("challenge.csv"), 
+  col_types = cols(
+    x = col_double(),
+    y = col_date()
+  )
+)
+tail(challenge)
+
+# Sometimes it’s easier to diagnose problems if you just read in all the columns as character vectors.
+challenge2 <- read_csv(readr_example("challenge.csv"), 
+  col_types = cols(.default = col_character())
+)
+# This is particularly useful in conjunction with type_convert(), which applies the parsing heuristics to the character columns in a data frame.
+df <- tribble(
+  ~x,  ~y,
+  "1", "1.21",
+  "2", "2.32",
+  "3", "4.56"
+)
+type_convert(df)
+
+# If you’re having major parsing problems, sometimes it’s easier to just read into a character vector of lines with read_lines(), or even a character vector of length 1 with read_file(). Then you can use the string parsing skills you’ll learn later to parse more exotic formats.
+
+# write_rds() and read_rds() are uniform wrappers around the base functions readRDS() and saveRDS(). These store data in R’s custom binary format called RDS.
+
+# The feather package implements a fast binary file format that can be shared across programming languages. " .feather"
+
+# library(haven) reads SPSS, Stata, and SAS files.
+# library(readxl) reads excel files (both .xls and .xlsx).
+# library(DBI), along with a database specific backend (e.g. RMySQL, RSQLite, RPostgreSQL etc) allows you to run SQL queries against a database and return a data frame.
+# For hierarchical data: use jsonlite (by Jeroen Ooms) for json, and xml2 for XML. 
 ```
 
