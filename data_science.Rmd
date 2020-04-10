@@ -600,6 +600,8 @@ type_convert(df)
 2. Each observation must have its own row.
 3. Each value must have its own cell.
 
+## Pivoting
+
 ```{r pivot}
 # pivot_longer() makes datasets longer by increasing the number of rows and decreasing the number of columns. pivot_longer() makes wide tables narrower and longer
 table4a = table4a %>% 
@@ -617,5 +619,27 @@ stocks <- tibble(
 stocks %>% 
   pivot_wider(names_from = year, values_from = return) %>% 
   pivot_longer("2015":"2016", names_to = "year", values_to = "return", names_ptype = list(year = double()))
+```
+
+## Separating and uniting
+
+```{r separate}
+# it leaves the type of the column as is. Here, however, it’s not very useful as those really are numbers. We can ask separate() to try and convert to better types using convert = TRUE.
+table3 %>% 
+  separate(rate, into = c("cases", "population"), sep = "/", convert = TRUE)
+
+# You can also pass a vector of integers to sep. separate() will interpret the integers as positions to split at. Positive values start at 1 on the far-left of the strings; negative value start at -1 on the far-right of the strings. When using integers to separate strings, the length of sep should be one less than the number of names in into.
+table3 %>% 
+  separate(year, into = c("century", "year"), sep = 2)
+table3 %>% 
+  separate(year, into = c("century", "year"), sep = -2)
+```
+
+```{r unite}
+# In this case we also need to use the sep argument. The default will place an underscore (_) between the values from different columns. Here we don’t want any separator so we use ""
+table5 %>% 
+  unite(new, century, year)
+table5 %>% 
+  unite(new, century, year, sep = "")
 ```
 
