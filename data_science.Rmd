@@ -594,3 +594,28 @@ type_convert(df)
 # For hierarchical data: use jsonlite (by Jeroen Ooms) for json, and xml2 for XML. 
 ```
 
+# Tidy data
+
+1. Each variable must have its own column.
+2. Each observation must have its own row.
+3. Each value must have its own cell.
+
+```{r pivot}
+# pivot_longer() makes datasets longer by increasing the number of rows and decreasing the number of columns. pivot_longer() makes wide tables narrower and longer
+table4a = table4a %>% 
+  pivot_longer(c("1999", "2000"), names_to = "year", values_to = "cases")
+table4b = table4b %>% 
+  pivot_longer(c("1999", "2000"), names_to = "year", values_to = "population")
+left_join(table4a, table4b)
+
+# pivot_wider() is the opposite of pivot_longer(). You use it when an observation is scattered across multiple rows. pivot_wider() makes long tables shorter and wider
+stocks <- tibble(
+  year   = c(2015, 2015, 2016, 2016),
+  half  = c(   1,    2,     1,    2),
+  return = c(1.88, 0.59, 0.92, 0.17)
+)
+stocks %>% 
+  pivot_wider(names_from = year, values_from = return) %>% 
+  pivot_longer("2015":"2016", names_to = "year", values_to = "return", names_ptype = list(year = double()))
+```
+
