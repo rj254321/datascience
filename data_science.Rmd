@@ -643,3 +643,43 @@ table5 %>%
   unite(new, century, year, sep = "")
 ```
 
+# Missing values
+
+```{r missing}
+(stocks <- tibble(
+  year   = c(2015, 2015, 2015, 2015, 2016, 2016, 2016),
+  qtr    = c(   1,    2,    3,    4,    2,    3,    4),
+  return = c(1.88, 0.59, 0.35,   NA, 0.92, 0.17, 2.66)
+))
+
+# The way that a dataset is represented can make implicit values explicit. 
+stocks %>% 
+  pivot_wider(names_from = year, values_from = return)
+
+# set values_drop_na = TRUE in pivot_longer() to turn explicit missing values implicit
+stocks %>% 
+  pivot_wider(names_from = year, values_from = return) %>% 
+  pivot_longer(
+    cols = c("2015", "2016"), 
+    names_to = "year", 
+    values_to = "return", 
+    values_drop_na = TRUE
+  )
+
+# complete() takes a set of columns, and finds all unique combinations. It then ensures the original dataset contains all those values, filling in explicit NAs where necessary.
+stocks %>% 
+  complete(year, qtr)
+
+# There’s one other important tool that you should know for working with missing values. Sometimes when a data source has primarily been used for data entry, missing values indicate that the previous value should be carried forward.
+(treatment <- tribble(
+  ~ person,           ~ treatment, ~response,
+  "Derrick Whitmore", 1,           7,
+  NA,                 2,           10,
+  NA,                 3,           9,
+  "Katherine Burke",  1,           4
+))
+# You can fill in these missing values with fill(). It takes a set of columns where you want missing values to be replaced by the most recent non-missing value (sometimes called last observation carried forward, LOCF).
+treatment %>% 
+  fill(person)
+```
+
