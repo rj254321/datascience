@@ -643,7 +643,7 @@ table5 %>%
   unite(new, century, year, sep = "")
 ```
 
-# Missing values
+## Missing values
 
 ```{r missing}
 (stocks <- tibble(
@@ -681,5 +681,40 @@ stocks %>%
 # You can fill in these missing values with fill(). It takes a set of columns where you want missing values to be replaced by the most recent non-missing value (sometimes called last observation carried forward, LOCF).
 treatment %>% 
   fill(person)
+```
+
+## Case study
+
+```{r case}
+(who_tidy = who %>% 
+  pivot_longer(
+    cols = new_sp_m014:newrel_f65, 
+    names_to = "key", 
+    values_to = "cases", 
+    values_drop_na = TRUE
+  ) %>% 
+  mutate(key = str_replace(key, "newrel", "new_rel")) %>% 
+  separate(key, c("new", "type", "sexage"), sep = "_") %>% 
+  select(-iso2, -iso3, -new) %>% 
+  separate(sexage, c("sex", "age"), sep = 1) %>% 
+  mutate(age_group = case_when(
+    age == "014" ~ "0-14",
+    age == "1524" ~ "15-24",
+    age == "2534" ~ "25-34", 
+    age == "3544" ~ "35-44",
+    age == "4554" ~ "45-54",
+    age == "5564" ~ "55-64",
+    age == "65" ~ "65+",
+    TRUE ~ NA_character_
+  )) %>% 
+  select(-age))
+
+who_tidy %>% 
+  group_by(country, year, sex) %>% 
+  summarise(total_cases = sum(cases)) %>% 
+  mutate(sex = ifelse(sex == "f", "female", "male")) %>% 
+  ggplot(mapping = aes(x = year, y = total_cases, fill = sex)) +
+  geom_col() +
+  coord_cartesian(xlim = c(1995, 2013))
 ```
 
