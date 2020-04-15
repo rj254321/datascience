@@ -814,3 +814,41 @@ airports %>%
 # Joining different variables between the tables, e.g. inner_join(x, y, by = c("a" = "b")) uses a slightly different syntax in SQL: SELECT * FROM x INNER JOIN y ON x.a = y.b. As this syntax suggests, SQL supports a wider range of join types than dplyr because you can connect the tables using constraints other than equality (sometimes called non-equijoins) ?
 ```
 
+## Filtering joins
+
+```{r filtering join}
+# Filtering joins match observations in the same way as mutating joins, but affect the observations, not the variables.
+
+# semi_join(x, y) keeps all observations in x that have a match in y. Semi-joins are useful for matching filtered summary tables back to the original rows.
+(top_desc <- flights %>% 
+   count(dest, sort = TRUE) %>% 
+   head(10))
+semi_join(flights, top_desc)
+
+# anti_join(x, y) drops all observations in x that have a match in y. Anti-joins are useful for diagnosing join mismatches. 
+```
+
+## Set operations
+
+```{r set}
+# All these operations work with a complete row, comparing the values of every variable. These expect the x and y inputs to have the same variables, and treat the observations like sets.
+# intersect(x, y): return only observations in both x and y.
+# union(x, y): return unique observations in x and y.
+# setdiff(x, y): return observations in x, but not in y.
+
+(df1 <- tribble(
+  ~x, ~y,
+   1,  1,
+   2,  1
+))
+(df2 <- tribble(
+  ~x, ~y,
+   1,  1,
+   1,  2
+))
+intersect(df1, df2)
+union(df1, df2)
+setdiff(df1, df2)
+setdiff(df2, df1)
+```
+
