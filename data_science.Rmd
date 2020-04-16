@@ -860,7 +860,23 @@ setdiff(df2, df1)
 # To include a literal single or double quote in a string you can use \ to “escape” it.
 double_quote <- "\"" # or '"'
 single_quote <- '\'' # or "'"
-
 # if you want to include a literal backslash, you’ll need to double it up: "\\"
+
+# the printed representation shows the escapes. To see the raw contents of the string, use writeLines()
+(x <- c("\"", "\\"))
+writeLines(x)
+
+# "\n": newline; "\t": tab. complete list: ?'"', or ?"'". like "\u00b5", this is a way of writing non-English characters that works on all platforms.
+(x <- "\u00b5")
+writeLines(x)
+```
+
+## String length
+
+```{r length}
+# str_length() tells you the number of characters in a string.
+str_length(c("a", "R for data science", NA)) # include space
+
+# The common str_ prefix is particularly useful if you use RStudio, because typing str_ will trigger autocomplete, allowing you to see all stringr functions.
 ```
 
