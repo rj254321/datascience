@@ -909,3 +909,17 @@ str_c(
 str_c(c("x", "y", "z"), collapse = ", ")
 ```
 
+### Subsetting strings
+
+```{r subset}
+# str_sub() takes start and end arguments which give the (inclusive) position of the substring.
+(x <- c("Apple", "Banana", "Pear"))
+str_sub(x, 1, 3) # vectorized
+str_sub(x, -3, -1) # negative numbers count backwards from end
+
+# str_sub() won’t fail if the string is too short: it will just return as much as possible.
+str_sub("ab", 1, 5)
+
+str_sub(x, 1, 1) <- str_to_lower(str_sub(x, 1, 1))
+```
+
