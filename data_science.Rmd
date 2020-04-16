@@ -923,3 +923,23 @@ str_sub("ab", 1, 5)
 str_sub(x, 1, 1) <- str_to_lower(str_sub(x, 1, 1))
 ```
 
+### Locales
+
+```{r locale}
+dog <- "The quick brown dog in the rain"
+str_to_upper(dog)
+str_to_lower(dog)
+str_to_title(dog)
+str_to_sentence("the quick brown dog in the rain")
+
+# different languages have different rules for changing case. You can pick which set of rules to use by specifying a locale.
+# Turkish has two i's: with and without a dot, and it has a different rule for capitalising them.
+str_to_upper(c("i", "ı"))
+str_to_upper(c("i", "ı"), locale = "tr")
+
+# The base R order() and sort() functions sort strings using the current locale. If you want robust behaviour across different computers, you may want to use str_sort() and str_order() which take an additional locale argument.
+x <- c("apple", "eggplant", "banana")
+str_sort(x, locale = "en")  # English
+str_sort(x, locale = "haw") # Hawaiian
+```
+
