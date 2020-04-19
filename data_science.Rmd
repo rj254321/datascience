@@ -972,3 +972,25 @@ writeLines(x)
 str_view(x, "\\\\")
 ```
 
+### Anchors
+
+```{r anchor}
+# ^ to match the start of the string.
+# $ to match the end of the string.
+x <- c("apple", "banana", "pear")
+str_view(x, "^a")
+str_view(x, "a$")
+# if you begin with power (^), you end up with money ($).
+
+# To force a regular expression to only match a complete string, anchor it with both ^ and $.
+x <- c("apple pie", "apple", "apple cake")
+str_view(x, "apple")
+str_view(x, "^apple$")
+
+# You can also match the boundary between words with \b. when I want to find the name of a function that’s a component of other functions
+x <- c("sum", "summarise", "summary", "rowsum")
+str_view(x, "\bsum\b") # ???
+
+str_view(x, "^sum$", match = TRUE)
+```
+
