@@ -1040,3 +1040,12 @@ str_view(x, "C{2,3}?")
 str_view(x, "C[LX]+?")
 ```
 
+### Grouping and backreferences
+
+```{r group}
+# Parentheses create a numbered capturing group (number 1, 2 etc.). A capturing group stores the part of the string matched by the part of the regular expression inside the parentheses. You can refer to the same text as previously matched by a capturing group with backreferences, like \1, \2 etc. e.g., the following regular expression finds all fruits that have a repeated pair of letters.
+str_view(fruit, "(..)\\1", match = TRUE)
+str_view(fruit, "(.)(.)\\2\\1", match = T)
+str_view(fruit, "(.).\\1.\\1", match = T)
+```
+
