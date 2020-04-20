@@ -994,3 +994,21 @@ str_view(x, "\bsum\b") # ???
 str_view(x, "^sum$", match = TRUE)
 ```
 
+### Character classes and alternatives
+
+```{r character class}
+# \d: matches any digit.
+# \s: matches any whitespace (e.g. space, tab, newline).
+# [abc]: matches a, b, or c.
+# [^abc]: matches anything except a, b, or c.
+
+# A character class containing a single character is a nice alternative to backslash escapes when you want to include a single metacharacter in a regex.
+str_view(c("abc", "a.c", "a*c", "a c"), "a[.]c")
+str_view(c("abc", "a.c", "a*c", "a c"), ".[*]c")
+str_view(c("abc", "a.c", "a*c", "a c"), "a[ ]")
+
+# You can use alternation to pick between one or more alternative patterns. e.g., abc|d..f will match either ‘“abc”’, or "deaf". Note that the precedence for | is low, so that abc|xyz matches abc or xyz not abcyz or abxyz.
+str_view(c("grey", "gray"), "gr(e|a)y")
+str_view(c("grey", "gray"), "gray|grey")
+```
+
