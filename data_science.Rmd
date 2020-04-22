@@ -1049,3 +1049,19 @@ str_view(fruit, "(.)(.)\\2\\1", match = T)
 str_view(fruit, "(.).\\1.\\1", match = T)
 ```
 
+## Tools
+
+### Detect matches
+
+```{r detect}
+x <- c("apple", "banana", "pear")
+str_detect(x, "e")
+
+# How many common words start with t?
+sum(str_detect(words, "^t"))
+# What proportion of common words end with a vowel?
+mean(str_detect(words, "[aeiou]$"))
+
+
+```
+
