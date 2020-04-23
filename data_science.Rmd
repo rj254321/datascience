@@ -1088,3 +1088,21 @@ df %>%
 str_view_all("abababa", "aba")
 ```
 
+### Extract matches
+
+```{r extract}
+colours <- c("red", "orange", "yellow", "green", "blue", "purple")
+(colour_match <- str_c(colours, collapse = "|"))
+has_colour <- str_subset(sentences, colour_match)
+(matches <- str_extract(has_colour, colour_match)) # str_extract() only extracts the first match.
+
+more <- sentences[str_count(sentences, colour_match) > 1]
+str_view_all(more, colour_match)
+# str_extract(more, colour_match) # str_extract() only extracts the first match
+str_extract_all(more, colour_match) # return a list
+# If you use simplify = TRUE, str_extract_all() will return a matrix with short matches expanded to the same length as the longest.
+str_extract_all(more, colour_match, simplify = TRUE)
+x <- c("a", "a b", "a b c")
+str_extract_all(x, "[a-z]", simplify = TRUE)
+```
+
