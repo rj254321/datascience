@@ -1147,3 +1147,33 @@ sentences %>%
   head(5)
 ```
 
+### Splitting
+
+```{r split}
+sentences %>%
+  head(5) %>% 
+  str_split(" ") # each component might contain a different number of pieces, return a list
+
+"a|b|c|d" %>% 
+  str_split("\\|") %>% 
+  .[[1]] # working with a length-1 vector, just extract the first element of the list
+
+sentences %>%
+  head(5) %>% 
+  str_split(" ", simplify = TRUE) # return a matrix
+
+# request a maximum number of pieces
+fields <- c("Name: Hadley", "Country: NZ", "Age: 35")
+fields %>% 
+  str_split(": ", n = 2, simplify = TRUE)
+
+# Instead of splitting up strings by patterns, you can also split up by character, line, sentence and word boundary().
+x <- "This is a sentence.  This is another sentence."
+str_view_all(x, boundary()) # each character
+str_view_all(x, boundary("word")) # each word
+# str_view_all(x, boundary("line_break"))
+str_view_all(x, boundary("sentence")) # each sentence
+str_split(x, " ")[[1]] # including extra " " between
+str_split(x, boundary("word"))[[1]] # no extra " ", no punctuation
+```
+
