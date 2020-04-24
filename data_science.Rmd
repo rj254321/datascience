@@ -1106,3 +1106,27 @@ x <- c("a", "a b", "a b c")
 str_extract_all(x, "[a-z]", simplify = TRUE)
 ```
 
+### Grouped matches
+
+```{r group}
+# You can also use parentheses to extract parts of a complex match. e.g., we want to extract nouns from the sentences. As a heuristic, we’ll look for any word that comes after “a” or “the”. Defining a “word” in a regular expression is a little tricky, so here I use a simple approximation: a sequence of at least one character that isn’t a space.
+noun <- "(a|the) ([^ ]+)"
+has_noun <- sentences %>%
+  str_subset(noun) %>%
+  head(10)
+has_noun %>% 
+  str_extract(noun) # str_extract() gives us the complete match
+
+# str_match() gives each individual component. Instead of a character vector, it returns a matrix, with one column for the complete match followed by one column for each group。
+has_noun %>% 
+  str_match(noun)
+# Like str_extract(), if you want all matches for each string, you’ll need str_match_all().
+
+# If your data is in a tibble, it’s often easier to use tidyr::extract(). It works like str_match() but requires you to name the matches, which are then placed in new column.
+tibble(sentence = sentences) %>% 
+  tidyr::extract(
+    sentence, c("article", "noun"), "(a|the) ([^ ]+)", 
+    remove = FALSE
+  )
+```
+
