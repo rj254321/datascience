@@ -16,6 +16,7 @@ library(hexbin)
 library(modelr)
 library(hms)
 library(microbenchmark)
+library(stringi)
 ```
 
 ```{r data load}
