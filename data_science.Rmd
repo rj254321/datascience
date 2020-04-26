@@ -15,6 +15,7 @@ library(lvplot)
 library(hexbin)
 library(modelr)
 library(hms)
+library(microbenchmark)
 ```
 
 ```{r data load}
@@ -1180,3 +1181,47 @@ str_split(x, boundary("word"))[[1]] # no extra " ", no punctuation
 ### Find matches
 
 str_locate() and str_locate_all() give you the starting and ending positions of each match. These are particularly useful when none of the other functions does exactly what you want. You can use str_locate() to find the matching pattern, str_sub() to extract and/or modify them.
+
+## Other types of pattern
+
+```{r other pattern}
+# The regular call: str_view(fruit, "nana") is shorthand for str_view(fruit, regex("nana")).
+
+# ignore_case = TRUE allows characters to match either their uppercase or lowercase forms.
+bananas <- c("banana", "Banana", "BANANA")
+str_view(bananas, regex("banana", ignore_case = TRUE))
+
+# multiline = TRUE allows ^ and $ to match the start and end of each line rather than the start and end of the complete string.
+x <- "Line 1\nLine 2\nLine 3"
+writeLines(x)
+str_extract_all(x, "^Line")[[1]]
+str_extract_all(x, regex("^Line", multiline = TRUE))[[1]]
+
+# comments = TRUE allows you to use comments and white space to make complex regular expressions more understandable. Spaces are ignored, as is everything after #. To match a literal space, you’ll need to escape it: "\\ ".
+phone <- regex("
+  \\(?     # optional opening parens
+  (\\d{3}) # area code
+  [) -]?   # optional closing parens, space, or dash
+  (\\d{3}) # another three numbers
+  [ -]?    # optional space or dash
+  (\\d{4}) # four more numbers
+  ", comments = TRUE)
+str_match("514-791-8141", phone)
+str_match("(347)937-0461", phone)
+
+# dotall = TRUE allows . to match everything, including \n.
+
+# fixed(): matches exactly the specified sequence of bytes. It ignores all special regular expressions and operates at a very low level. This allows you to avoid complex escaping and can be much faster than regular expressions. The following microbenchmark shows that it’s about 3x faster for a simple example.
+microbenchmark(
+  fixed = str_detect(sentences, fixed("the")),
+  regex = str_detect(sentences, "the"),
+  times = 20
+)
+
+# coll(): compare strings using standard collation rules. This is useful for doing case insensitive matching. Note that coll() takes a locale parameter that controls which rules are used for comparing characters. Unfortunately different parts of the world use different rules!
+
+x <- "This is a sentence."
+str_view_all(x, boundary("word"))
+str_extract_all(x, boundary("word"))
+```
+
