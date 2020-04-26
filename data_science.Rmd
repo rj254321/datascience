@@ -1237,3 +1237,9 @@ dir(pattern = "\\.Rmd$")
 # (If you’re more comfortable with “globs” like *.Rmd, you can convert them to regular expressions with glob2rx()). ?
 ```
 
+## Stringi
+
+Stringi package contains almost every function you might ever need: stringi has 244 functions to stringr’s 49.
+
+If you find yourself struggling to do something in stringr, it’s worth taking a look at stringi. The packages work very similarly, so you should be able to translate your stringr knowledge in a natural way. The main difference is the prefix: str_ vs. stri_.
+
