@@ -1244,3 +1244,26 @@ Stringi package contains almost every function you might ever need: stringi has 
 
 If you find yourself struggling to do something in stringr, it’s worth taking a look at stringi. The packages work very similarly, so you should be able to translate your stringr knowledge in a natural way. The main difference is the prefix: str_ vs. stri_.
 
+# Factors
+
+## Creating factors
+
+```{r create factor}
+x1 <- c("Dec", "Apr", "Jan", "Mar")
+(y1 <- factor(x1, levels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")))
+sort(y1)
+
+# any values not in the set will be silently converted to NA.
+(y2 <- factor(c("Dec", "Apr", "Jam", "Mar"), levels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))) 
+parse_factor(c("Dec", "Apr", "Jam", "Mar"), levels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")) # warning
+
+# If you omit the levels, they’ll be taken from the data in alphabetical order.
+
+# Sometimes you’d prefer that the order of the levels match the order of the first appearance in the data. You can do that when creating the factor by setting levels to unique(x), or after the fact, with fct_inorder().
+(f1 <- factor(x1, levels = unique(x1)))
+(f2 <- x1 %>% factor() %>% fct_inorder())
+
+# If you ever need to access the set of valid levels directly, you can do so with levels().
+levels(f2)
+```
+
