@@ -1306,3 +1306,59 @@ gss_cat %>%
 # denom is related to "Protestant" in relig
 ```
 
+## Modifying factor order
+
+```{r modify order}
+relig_summary <- gss_cat %>%
+  group_by(relig) %>%
+  summarise(
+    age = mean(age, na.rm = TRUE),
+    tvhours = mean(tvhours, na.rm = TRUE),
+    n = n()
+  )
+ggplot(relig_summary, aes(tvhours, relig)) + geom_point()
+
+# fct_reorder() takes three arguments:
+# f, the factor whose levels you want to modify.
+# x, a numeric vector that you want to use to reorder the levels.
+# Optionally, fun, a function that’s used if there are multiple values of x for each value of f. The default value is median.
+ggplot(relig_summary, aes(tvhours, fct_reorder(relig, tvhours))) +
+  geom_point()
+
+# fct_relevel(): It takes a factor, f, and then any number of levels that you want to move to the front of the line.
+rincome_summary <- gss_cat %>%
+  group_by(rincome) %>%
+  summarise(
+    age = mean(age, na.rm = TRUE),
+    tvhours = mean(tvhours, na.rm = TRUE),
+    n = n()
+  )
+ggplot(rincome_summary, aes(age, fct_relevel(rincome, "Not applicable"))) +
+  geom_point()
+
+# fct_reorder2() reorders the factor by the y values associated with the largest x values. This makes the plot easier to read because the line colours line up with the legend.
+by_age <- gss_cat %>%
+  filter(!is.na(age)) %>%
+  count(age, marital) %>%
+  group_by(age) %>%
+  mutate(prop = n / sum(n))
+ggplot(by_age, aes(age, prop, colour = marital)) +
+  geom_line(na.rm = TRUE)
+ggplot(by_age, aes(age, prop, colour = fct_reorder2(marital, age, prop))) +
+  geom_line() +
+  labs(colour = "marital") # change the name of the legend from "fct_reorder2(marital, age, prop)" to "marital"
+# fct_reorder() is useful for 1d displays where the factor is mapped to position; fct_reorder2() for 2d displays where the factor is mapped to a non-position aesthetic. fct_reorder2(.f, .x, .y, .fun = last2, ..., .desc = TRUE), last2() finds the last value of y when sorted by x. 
+
+Usage
+
+# For bar plots, you can use fct_infreq() to order levels in increasing frequency: this is the simplest type of reordering because it doesn’t need any extra variables. You may want to combine with fct_rev().
+gss_cat %>%
+  mutate(marital = marital %>% fct_infreq()) %>%
+  ggplot(aes(marital)) +
+    geom_bar() # decreasing
+gss_cat %>%
+  mutate(marital = marital %>% fct_infreq() %>% fct_rev()) %>%
+  ggplot(aes(marital)) +
+    geom_bar() # increasing
+```
+
