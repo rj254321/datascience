@@ -17,6 +17,7 @@ library(modelr)
 library(hms)
 library(microbenchmark)
 library(stringi)
+library(tidytidbits)
 ```
 
 ```{r data load}
@@ -1265,5 +1266,43 @@ parse_factor(c("Dec", "Apr", "Jam", "Mar"), levels = c("Jan", "Feb", "Mar", "Apr
 
 # If you ever need to access the set of valid levels directly, you can do so with levels().
 levels(f2)
+```
+
+## General Social Survey
+
+```{r GSS}
+gss_cat
+
+ggplot(gss_cat, aes(race)) +
+  geom_bar() # By default, ggplot2 will drop levels that don’t have any values. 
+# You can force them to display with:
+ggplot(gss_cat, aes(race)) +
+  geom_bar() +
+  scale_x_discrete(drop = FALSE)
+
+ggplot(gss_cat, aes(rincome)) + 
+  geom_bar() +
+  coord_flip()
+
+gss_cat %>% 
+  count_by(relig) %>% 
+  arrange(desc(n))
+
+gss_cat %>% 
+  count_by(partyid) %>% 
+  arrange(desc(n))
+
+gss_cat %>% 
+  select(relig, denom)
+gss_cat %>% 
+  count(relig, denom) %>% 
+  arrange(desc(n))
+gss_cat %>% 
+  ggplot(aes(x = relig, y = denom)) +
+  geom_point()
+gss_cat %>% 
+  filter(denom != "Not applicable") %>% 
+  count(relig, denom)
+# denom is related to "Protestant" in relig
 ```
 
