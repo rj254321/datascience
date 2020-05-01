@@ -1362,3 +1362,46 @@ gss_cat %>%
     geom_bar() # increasing
 ```
 
+## Modifying factor levels
+
+```{r modify level}
+# More powerful than changing the orders of the levels is changing their values. This allows you to clarify labels for publication, and collapse levels for high-level displays.
+gss_cat %>% count(partyid)
+gss_cat %>%
+  mutate(partyid = fct_recode(partyid,
+    "Republican, strong"    = "Strong republican",
+    "Republican, weak"      = "Not str republican",
+    "Independent, near rep" = "Ind,near rep",
+    "Independent, near dem" = "Ind,near dem",
+    "Democrat, weak"        = "Not str democrat",
+    "Democrat, strong"      = "Strong democrat"
+  )) %>%
+  count(partyid)
+# fct_recode() will leave levels that aren’t explicitly mentioned as is, and will warn you if you accidentally refer to a level that doesn’t exist.
+
+# To combine groups, you can assign multiple old levels to the same new level.
+gss_cat %>%
+  mutate(partyid = fct_recode(partyid,
+    "Republican, strong"    = "Strong republican",
+    "Republican, weak"      = "Not str republican",
+    "Independent, near rep" = "Ind,near rep",
+    "Independent, near dem" = "Ind,near dem",
+    "Democrat, weak"        = "Not str democrat",
+    "Democrat, strong"      = "Strong democrat",
+    "Other"                 = "No answer",
+    "Other"                 = "Don't know",
+    "Other"                 = "Other party"
+  )) %>%
+  count(partyid)
+
+# If you want to collapse a lot of levels, fct_collapse() is a useful variant of fct_recode(). For each new variable, you can provide a vector of old levels.
+gss_cat %>%
+  mutate(partyid = fct_collapse(partyid,
+    "other" = c("No answer", "Don't know", "Other party"),
+    "rep" = c("Strong republican", "Not str republican"),
+    "ind" = c("Ind,near rep", "Independent", "Ind,near dem"),
+    "dem" = c("Not str democrat", "Strong democrat")
+  )) %>%
+  count(partyid)
+```
+
