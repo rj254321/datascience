@@ -1403,5 +1403,16 @@ gss_cat %>%
     "dem" = c("Not str democrat", "Strong democrat")
   )) %>%
   count(partyid)
+
+# Sometimes you just want to lump together all the small groups to make a plot or table simpler.
+gss_cat %>%
+  mutate(relig = fct_lump(relig)) %>%
+  count(relig)
+# The default behaviour is to progressively lump together the smallest groups, ensuring that the aggregate is still the smallest group. In this case it’s not very helpful: it is true that the majority of Americans in this survey are Protestant, but we’ve probably over collapsed. Instead, we can use the n parameter to specify how many groups (excluding other) we want to keep.
+gss_cat %>%
+  mutate(relig = fct_lump(relig, n = 10)) %>%
+  count(relig, sort = TRUE)
+  # %>% print(n = Inf)
 ```
+
 
