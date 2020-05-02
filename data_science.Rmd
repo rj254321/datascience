@@ -18,6 +18,7 @@ library(hms)
 library(microbenchmark)
 library(stringi)
 library(tidytidbits)
+library(lubridate)
 ```
 
 ```{r data load}
@@ -1415,4 +1416,82 @@ gss_cat %>%
   # %>% print(n = Inf)
 ```
 
+# Dates and times
+
+## Creating date/times
+
+### From strings
+
+```{r date-time from string}
+today()
+now()
+
+ymd("2017-01-31")
+mdy("January 31st, 2017")
+dmy("31-Jan-2017")
+ymd(20170131)
+
+ymd_hms("2017-01-31 20:11:59")
+mdy_hm("01/31/2017 08:01")
+
+# force the creation of a date-time from a date by supplying a timezone
+ymd(20170131, tz = "UTC")
+str(ymd(20170131, tz = "UTC"))
+```
+
+### From individual components
+
+```{r date-time from components}
+flights %>% 
+  select(year, month, day) %>% 
+  mutate(depart_day = make_date(year, month, day))
+flights %>% 
+  select(year, month, day, hour, minute) %>% 
+  mutate(departure = make_datetime(year, month, day, hour, minute))
+
+make_datetime_100 <- function(year, month, day, time) {
+  make_datetime(year, month, day, time %/% 100, time %% 100)
+}
+(flights_dt <- flights %>% 
+  filter(!is.na(dep_time), !is.na(arr_time)) %>% 
+  mutate(
+    dep_time = make_datetime_100(year, month, day, dep_time),
+    arr_time = make_datetime_100(year, month, day, arr_time),
+    sched_dep_time = make_datetime_100(year, month, day, sched_dep_time),
+    sched_arr_time = make_datetime_100(year, month, day, sched_arr_time)
+  ) %>% 
+  select(origin, dest, ends_with("delay"), ends_with("time")))
+
+flights_dt %>% 
+  ggplot(aes(dep_time)) + 
+  geom_freqpoly(binwidth = 86400) # 86400 seconds = 1 day
+flights_dt %>% 
+  filter(dep_time < ymd(20130102)) %>% # date: 20130101
+  ggplot(aes(dep_time)) + 
+  geom_freqpoly(binwidth = 600) # 600 seconds = 10 minutes
+# Note that when you use date-times in a numeric context (like in a histogram), 1 means 1 second, so a binwidth of 86400 means 1 day. For dates, 1 means 1 day.
+```
+
+### From other types
+
+```{r date-time from other}
+# switch between a date-time and a date
+as_datetime(today())
+as_date(now())
+
+# Sometimes you’ll get date/times as numeric offsets from the “Unix Epoch”, 1970-01-01. If the offset is in seconds, use as_datetime(); if it’s in days, use as_date().
+as_datetime(60 * 60 * 10)
+as_date(365 * 10 + 2)
+
+d1 <- "January 1, 2010"
+d2 <- "2015-Mar-07"
+d3 <- "06-Jun-2017"
+d4 <- c("August 19 (2015)", "July 1 (2015)")
+d5 <- "12/30/14" # Dec 30, 2014
+mdy(d1)
+ymd(d2)
+dmy(d3)
+mdy(d4)
+mdy(d5)
+```
 
