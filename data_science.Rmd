@@ -1577,3 +1577,30 @@ flights_dt %>%
 # Setting larger components of a date to a constant is a powerful technique that allows you to explore patterns in the smaller components.
 ```
 
+## Time spans
+
+### Durations
+
+Durations: represent an exact number of seconds.
+
+```{r duration}
+# How old are you?
+(h_age <- today() - ymd(19941021)) # a difftime class object
+
+as.duration(h_age) # in second
+dseconds(15)
+dminutes(10)
+dhours(c(12, 24))
+ddays(0:5)
+dweeks(3)
+dyears(1)
+# Larger units are created by converting minutes, hours, days, weeks, and years to seconds at the standard rate (60 seconds in a minute, 60 minutes in an hour, 24 hours in day, 7 days in a week, 365 days in a year).
+
+2 * dyears(1)
+dyears(1) + dweeks(12) + dhours(15)
+(tomorrow <- today() + ddays(1))
+(last_year <- today() - dyears(1)) # be careful of leap year
+(one_pm <- ymd_hms("2016-03-12 13:00:00", tz = "America/New_York"))
+one_pm + ddays(1) # The time zone has changed. Because of DST, March 12 only has 23 hours, so if we add a full days worth of seconds we end up with a different time.
+```
+
