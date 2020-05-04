@@ -1654,3 +1654,30 @@ next_year <- today() + years(1)
 ### Summary
 
 If you only care about physical time, use a duration; if you need to add human times, use a period; if you need to figure out how long a span is in human units, use an interval.
+
+## Time zones
+
+```{r time zone}
+Sys.timezone()
+
+length(OlsonNames())
+head(OlsonNames())
+
+# the time zone is an attribute of the date-time that only controls printing
+(x1 <- ymd_hms("2015-06-01 12:00:00", tz = "America/New_York"))
+(x2 <- ymd_hms("2015-06-01 18:00:00", tz = "Europe/Copenhagen"))
+(x3 <- ymd_hms("2015-06-02 04:00:00", tz = "Pacific/Auckland"))
+x1-x2
+x2-x3
+
+#  Operations that combine date-times, like c(), will often drop the time zone. In that case, the date-times will display in your local time zone.
+(x4 <- c(x1, x2, x3))
+
+# Keep the instant in time the same, and change how it’s displayed. Use this when the instant is correct, but you want a more natural display.
+(x4a <- with_tz(x4, tzone = "Australia/Lord_Howe"))
+x4a - x4
+# Change the underlying instant in time. Use this when you have an instant that has been labelled with the incorrect time zone, and you need to fix it.
+(x4b <- force_tz(x4, tzone = "Australia/Lord_Howe"))
+x4b - x4
+```
+
