@@ -1681,3 +1681,51 @@ x4a - x4
 x4b - x4
 ```
 
+# Pipes
+
+## Piping alternatives
+
+### Intermediate steps
+
+The simplest approach is to save each step as a new object.
+
+### Overwrite the original
+
+### Function composition
+
+Another approach is to abandon assignment and just string the function calls together.
+
+### Use the pipe
+
+```{r pipe}
+foo_foo %>%
+  hop(through = forest) %>%
+  scoop(up = field_mice) %>%
+  bop(on = head)
+# The pipe works by performing a “lexical transformation”: behind the scenes, magrittr reassembles the code in the pipe to a form that works by overwriting an intermediate object. When you run a pipe like the one above, magrittr does something like this:
+my_pipe <- function(.) {
+  . <- hop(., through = forest)
+  . <- scoop(., up = field_mice)
+  bop(., on = head)
+}
+my_pipe(foo_foo)
+
+# pipe won’t work for two classes of functions:
+# 1. Functions that use the current environment. e.g., assign() will create a new variable with the given name in the current environment:
+assign("x", 10)
+x
+"x" %>% assign(100)
+x
+# The use of assign with the pipe does not work because it assigns it to a temporary environment used by %>%. If you do want to use assign with the pipe, you must be explicit about the environment:
+env <- environment()
+"x" %>% assign(100, envir = env)
+x
+# Other functions with this problem include get() and load().
+# 2. Functions that use lazy evaluation. In R, function arguments are only computed when the function uses them, not prior to calling the function. The pipe computes each element in turn, so you can’t rely on this behaviour.
+# One place that this is a problem is tryCatch(), which lets you capture and handle errors:
+tryCatch(stop("!"), error = function(e) "An error")
+stop("!") %>% 
+  tryCatch(error = function(e) "An error")
+# There are a relatively wide class of functions with this behaviour, including try(), suppressMessages(), and suppressWarnings() in base R.
+```
+
