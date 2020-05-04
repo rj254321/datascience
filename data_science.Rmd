@@ -1604,3 +1604,39 @@ dyears(1) + dweeks(12) + dhours(15)
 one_pm + ddays(1) # The time zone has changed. Because of DST, March 12 only has 23 hours, so if we add a full days worth of seconds we end up with a different time.
 ```
 
+### Periods
+
+Periods are time spans but don’t have a fixed length in seconds, instead they work with “human” times, like days and months.
+
+```{r period}
+seconds(15)
+minutes(10)
+hours(c(12, 24))
+days(7)
+months(1:6)
+weeks(3)
+years(1)
+
+10 * (months(6) + days(1))
+days(50) + hours(25) + minutes(2)
+
+# A leap year
+ymd("2016-01-01") + dyears(1) # 2016-12-31
+ymd("2016-01-01") + years(1)
+# # Daylight Savings Time
+one_pm + ddays(1)
+one_pm + days(1)
+
+flights_dt %>% 
+  filter(arr_time < dep_time) 
+# Overnight flights: We used the same date information for both the departure and the arrival times, but these flights arrived on the following day.
+flights_dt <- flights_dt %>% 
+  mutate(
+    overnight = arr_time < dep_time, # TRUE/FALSE = 0/1
+    arr_time = arr_time + days(overnight * 1),
+    sched_arr_time = sched_arr_time + days(overnight * 1)
+  )
+flights_dt %>% 
+  filter(overnight, arr_time < dep_time) 
+```
+
