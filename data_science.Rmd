@@ -1640,3 +1640,17 @@ flights_dt %>%
   filter(overnight, arr_time < dep_time) 
 ```
 
+### Intervals
+
+```{r interval}
+years(1)/days(1)
+
+# An interval is a duration with a starting point: that makes it precise so you can determine exactly how long it is.
+next_year <- today() + years(1)
+(today() %--% next_year) / ddays(1)
+(today() %--% next_year) %/% days(1)
+```
+
+### Summary
+
+If you only care about physical time, use a duration; if you need to add human times, use a period; if you need to figure out how long a span is in human units, use an interval.
