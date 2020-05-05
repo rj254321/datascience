@@ -1777,5 +1777,25 @@ rescale01 <- function(x) {
   rng <- range(x, na.rm = TRUE, finite = TRUE)
   (x - rng[1]) / (rng[2] - rng[1])
 }
+
+rescale01 <- function(x) {
+  rng <- range(x, na.rm = TRUE, finite = TRUE)
+  if (x == -Inf) return (0)
+  if (x == Inf) return (1)
+  (x - rng[1]) / (rng[2] - rng[1])
+}
+rescale01(c(-Inf, 0, 1, 2, 3, 4, Inf))
+```
+
+## Functions are for humans and computers
+
+```{r human computer}
+# Another important use of comments is to break up your file into easily readable chunks. Use long lines of - and = to make it easy to spot the breaks.
+
+# Load data --------------------------------------
+
+# Plot data --------------------------------------
+
+# RStudio provides a keyboard shortcut to create these headers (Cmd/Ctrl + Shift + R), and will display them in the code navigation drop-down at the bottom-left of the editor. ?
 ```
 
