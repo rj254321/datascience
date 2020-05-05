@@ -1799,3 +1799,11 @@ rescale01(c(-Inf, 0, 1, 2, 3, 4, Inf))
 # RStudio provides a keyboard shortcut to create these headers (Cmd/Ctrl + Shift + R), and will display them in the code navigation drop-down at the bottom-left of the editor. ?
 ```
 
+## Conditional execution
+
+### Conditions
+
+```{r condition}
+
+```
+
