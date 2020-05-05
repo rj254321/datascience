@@ -1762,3 +1762,20 @@ mtcars <- mtcars %>%
 mtcars %<>% transform(cyl = cyl * 2)
 ```
 
+# Functions
+
+## When should you write a function?
+
+```{r write function}
+rescale01 <- function(x) {
+  rng <- range(x, na.rm = TRUE)
+  (x - rng[1]) / (rng[2] - rng[1])
+}
+rescale01(c(0, 5, 10))
+
+rescale01 <- function(x) {
+  rng <- range(x, na.rm = TRUE, finite = TRUE)
+  (x - rng[1]) / (rng[2] - rng[1])
+}
+```
+
