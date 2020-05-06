@@ -1807,3 +1807,37 @@ if (NA) {}
 identical(0L, 0)
 ```
 
+### Multiple conditions
+
+```{r multiple conditions}
+if (this) {
+  # do that
+} else if (that) {
+  # do something else
+} else {
+  # 
+}
+
+op = function(x, y, op) {
+   switch(op,
+     plus = x + y,
+     minus = x - y,
+     times = x * y,
+     divide = x / y,
+     stop("Unknown op!")
+   )
+}
+op(1, 2, "plus")
+op(1, 2, "minus")
+op(1, 2, "times")
+op(1, 2, "divide")
+op(1, 2, "squareroot")
+
+# cut(): discretise continuous variables
+# Convert Numeric to Factor, divides the range of x into intervals and codes the values in x according to which interval they fall.
+Z <- rnorm(10000)
+table(cut(Z, breaks = -6:6))
+table(cut(Z, breaks = -6:6, labels = FALSE))
+hist(Z, breaks = -6:6, plot = FALSE)$counts
+```
+
