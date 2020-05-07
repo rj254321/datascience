@@ -1844,6 +1844,29 @@ hist(Z, breaks = -6:6, plot = FALSE)$counts
 ### Code style
 
 ```{r code style}
+if (y < 0 && debug) {
+  message("Y is negative")
+}
+
+if (y == 0) {
+  log(x)
+} else {
+  y ^ x
+}
+
+# It’s ok to drop the curly braces if you have a very short if statement that can fit on one line.
+y <- 10
+x <- if (y < 20) "Too low" else "Too high"
+if (y < 20) {
+  "Too low"
+} else {
+  "Too high"
+}
+```
+
+## Function arguments
+
+```{r argument}
 # Generally, data arguments should come first. Detail arguments should go on the end, and usually should have default values. You specify a default value in the same way you call a function with a named argument.
 # Compute confidence interval around mean using normal approximation
 mean_ci <- function(x, conf = 0.95) {
@@ -1856,3 +1879,4 @@ mean_ci(x)
 mean_ci(x, conf = 0.99)
 ```
 
+### 
