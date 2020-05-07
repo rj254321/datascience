@@ -1946,3 +1946,33 @@ rule <- function(..., pad = "-") {
 rule("Important output")
 ```
 
+## Return values
+
+### Explicit return statements
+
+```{r explicit return}
+# The value returned by the function is usually the last statement it evaluates, but you can choose to return early by using return(). A common reason to do this is because the inputs are empty.
+complicated_function <- function(x, y, z) {
+  if (length(x) == 0 || length(y) == 0) {
+    return(0)
+  }
+    
+  # Complicated code here
+}
+
+f <- function() {
+  if (!x) {
+    return(something_short)
+  }
+
+  # Do 
+  # something
+  # that
+  # takes
+  # many
+  # lines
+  # to
+  # express
+}
+```
+
