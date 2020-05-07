@@ -1927,3 +1927,22 @@ wt_mean <- function(x, w, na.rm = FALSE) {
 wt_mean(1:6, 6:1, na.rm = "foo")
 ```
 
+### Dot-dot-dot (...)
+
+```{r ...}
+# Many functions in R take an arbitrary number of inputs.
+# ... (pronounced dot-dot-dot): captures any number of arguments that aren’t otherwise matched. 
+# It’s useful because you can then send those ... on to another function. This is a useful catch-all if your function primarily wraps another function.
+commas <- function(...) {
+  str_c(..., collapse = ", ")
+}
+commas(letters[1:10])
+
+rule <- function(..., pad = "-") {
+  title <- paste0(...)
+  width <- getOption("width") - nchar(title) - 5
+  cat(title, " ", str_dup(pad, width), "\n", sep = "")
+}
+rule("Important output")
+```
+
