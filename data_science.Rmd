@@ -1998,3 +1998,55 @@ mtcars %>%
   mutate(mpg = ifelse(mpg < 20, NA, mpg)) %>% 
   show_missings() 
 ```
+
+# Vectors
+
+## Vector basics
+
+```{r basic}
+# NULL is often used to represent the absence of a vector (as opposed to NA which is used to represent the absence of a value in a vector). NULL typically behaves like a vector of length 0.
+typeof(letters)
+typeof(1:10)
+typeof(c(1:10))
+x <- list("a", "b", 1:10)
+length(x)
+
+# Vectors can also contain arbitrary additional metadata in the form of attributes. These attributes are used to create augmented vectors which build on additional behaviour.
+# Factors are built on top of integer vectors.
+# Dates and date-times are built on top of numeric vectors.
+# Data frames and tibbles are built on top of lists.
+```
+
+## Important types of atomic vector
+
+### Logical
+
+```{r logical}
+# they can take only three possible values: FALSE, TRUE, and NA.
+typeof(1:10 %% 3 == 0)
+typeof(c(TRUE, TRUE, FALSE, NA))
+```
+
+### Numeric
+
+```{r numeric}
+# Numbers are doubles by default. To make an integer, place an L after the number:
+typeof(1)
+typeof(1L)
+1.5L # integer literal 1.5L contains decimal; using numeric value
+
+# Doubles are approximations. Doubles represent floating point numbers that can not always be precisely represented with a fixed amount of memory.
+(x <- sqrt(2) ^ 2)
+x - 2 # 4.440892e-16
+# Instead of comparing floating point numbers using ==, you should use dplyr::near() which allows for some numerical tolerance.
+
+# Integers have one special value: NA, while doubles have four: NA, NaN, Inf and -Inf. All three special values NaN, Inf and -Inf can arise during division:
+c(-1, 0, 1)/0
+# Avoid using == to check for these other special values. Instead use the helper functions is.finite(), is.infinite(), and is.nan():
+x <- c(0, -Inf, Inf, NA, NaN)
+is.finite(x)
+is.infinite(x)
+is.na(x)
+is.nan(x)
+```
+
