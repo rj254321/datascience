@@ -1862,6 +1862,13 @@ if (y < 20) {
 } else {
   "Too high"
 }
+
+switch(x, 
+  a = ,
+  b = "ab",
+  c = ,
+  d = "cd"
+)
 ```
 
 ## Function arguments
@@ -1879,4 +1886,16 @@ mean_ci(x)
 mean_ci(x, conf = 0.99)
 ```
 
-### 
+### Choosing names
+
+* x, y, z: vectors.
+
+* w: a vector of weights.
+
+* df: a data frame.
+
+* i, j: numeric indices (typically rows and columns).
+
+* n: length, or number of rows.
+
+* p: number of columns.
