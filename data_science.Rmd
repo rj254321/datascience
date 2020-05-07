@@ -1976,3 +1976,26 @@ f <- function() {
 }
 ```
 
+### Writing pipeable functions
+
+```{r pipeable}
+# With transformations, an object is passed to the function’s first argument and a modified object is returned. 
+# With side-effects, the passed object is not transformed. Instead, the function performs an action on the object, like drawing a plot or saving a file. Side-effects functions should “invisibly” return the first argument, so that while they’re not printed they can still be used in a pipeline.
+show_missings <- function(df) {
+  n <- sum(is.na(df))
+  cat("Missing values: ", n, "\n", sep = "")
+  
+  invisible(df)
+}
+# If we call it interactively, the invisible() means that the input df doesn’t get printed out.
+show_missings(mtcars)
+# But it’s still there, it’s just not printed by default.
+x <- show_missings(mtcars)
+class(x) # data.frame
+dim(x) # 32*11
+mtcars %>% 
+  show_missings() %>% 
+  mutate(mpg = ifelse(mpg < 20, NA, mpg)) %>% 
+  show_missings() 
+```
+
