@@ -1998,4 +1998,3 @@ mtcars %>%
   mutate(mpg = ifelse(mpg < 20, NA, mpg)) %>% 
   show_missings() 
 ```
-
