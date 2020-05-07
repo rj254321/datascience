@@ -1841,3 +1841,18 @@ table(cut(Z, breaks = -6:6, labels = FALSE))
 hist(Z, breaks = -6:6, plot = FALSE)$counts
 ```
 
+### Code style
+
+```{r code style}
+# Generally, data arguments should come first. Detail arguments should go on the end, and usually should have default values. You specify a default value in the same way you call a function with a named argument.
+# Compute confidence interval around mean using normal approximation
+mean_ci <- function(x, conf = 0.95) {
+  se <- sd(x) / sqrt(length(x))
+  alpha <- 1 - conf
+  mean(x) + se * qnorm(c(alpha/2, 1 - alpha/2))
+}
+x <- runif(100)
+mean_ci(x)
+mean_ci(x, conf = 0.99)
+```
+
