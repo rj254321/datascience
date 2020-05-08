@@ -2206,7 +2206,54 @@ attributes(x)
 ```{r factor}
 # Factors are designed to represent categorical data that can take a fixed set of possible values. Factors are built on top of integers, and have a levels attribute.
 x <- factor(c("ab", "cd", "ab"), levels = c("ab", "cd", "ef"))
-typeof(x) # integer, ?
+typeof(x) # integer
 attributes(x)
+# $levels
+# [1] "ab" "cd" "ef"
+
+# $class
+# [1] "factor"
+```
+
+### Dates and date-times
+
+```{r date}
+# Dates in R are numeric vectors that represent the number of days since 1 January 1970.
+x <- as.Date("1971-01-01")
+unclass(x)
+typeof(x) # double
+attributes(x)
+# $class
+# [1] "Date"
+
+# Date-times are numeric vectors with class POSIXct that represent the number of seconds since 1 January 1970. (In case you were wondering, “POSIXct” stands for “Portable Operating System Interface”, calendar time.)
+x <- ymd_hm("1970-01-01 01:00")
+unclass(x)
+#> [1] 3600
+#> attr(,"tzone")
+#> [1] "UTC"
+typeof(x) # double
+attributes(x)
+#> $class
+#> [1] "POSIXct" "POSIXt" 
+#> 
+#> $tzone
+#> [1] "UTC"
+# The tzone attribute is optional. It controls how the time is printed, not what absolute time it refers to.
+
+# There is another type of date-times called POSIXlt. These are built on top of named lists.
+y <- as.POSIXlt(x)
+typeof(y) # list
+attributes(y)
+#> $names
+#>  [1] "sec"    "min"    "hour"   "mday"   "mon"    "year"   "wday"   "yday"  
+#>  [9] "isdst"  "zone"   "gmtoff"
+#> 
+#> $class
+#> [1] "POSIXlt" "POSIXt" 
+#> 
+#> $tzone
+#> [1] "US/Eastern" "EST"        "EDT"
+# POSIXct’s are always easier to work with, so if you find you have a POSIXlt, you should always convert it to a regular data time lubridate::as_date_time().
 ```
 
