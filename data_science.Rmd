@@ -2169,8 +2169,6 @@ z <- list(list(1, 2), list(3, 4))
 str(z)
 ```
 
-### Visualizing lists
-
 ### Subsetting
 
 ```{r list subset}
@@ -2188,6 +2186,17 @@ str(a[[4]])
 # $ is a shorthand for extracting named elements of a list. It works similarly to [[ except that you don’t need to use quotes.
 a$a
 a[["a"]]
+```
+
+## Atrrtibutes
+
+```{r attribute}
+# Any vector can contain arbitrary additional metadata through its attributes. You can think of attributes as named list of vectors that can be attached to any object. You can get and set individual attribute values with attr() or see them all at once with attributes().
+x <- 1:10
+attr(x, "greeting")
+attr(x, "greeting") <- "Hi!"
+attr(x, "farewell") <- "Bye!"
+attributes(x)
 ```
 
 
