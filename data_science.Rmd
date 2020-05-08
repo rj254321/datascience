@@ -2061,4 +2061,21 @@ typeof(NA_real_)
 typeof(NA_character_)
 ```
 
+## Using atomic vectors
+
+### Coercion
+
+```{r coercion}
+# from integer to logical:
+if (length(x)) {
+  # do something
+}
+# 0 is converted to FALSE and everything else is converted to TRUE
+# Instead be explicit: length(x) > 0
+
+# create a vector containing multiple types with c(): the most complex type always wins.
+typeof(c(TRUE, 1L))
+typeof(c(1L, 1.5))
+typeof(c(1.5, "a"))
+```
 
