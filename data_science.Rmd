@@ -2199,4 +2199,14 @@ attr(x, "farewell") <- "Bye!"
 attributes(x)
 ```
 
+## Augmented vectors
+
+### Factors
+
+```{r factor}
+# Factors are designed to represent categorical data that can take a fixed set of possible values. Factors are built on top of integers, and have a levels attribute.
+x <- factor(c("ab", "cd", "ab"), levels = c("ab", "cd", "ef"))
+typeof(x) # integer, ?
+attributes(x)
+```
 
