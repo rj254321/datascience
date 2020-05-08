@@ -2079,3 +2079,18 @@ typeof(c(1L, 1.5))
 typeof(c(1.5, "a"))
 ```
 
+### Test functions
+
+```{r test function}
+is_logical()	
+is_integer()			
+is_double()		
+is_numeric() # integer & double		
+is_character()
+is_atomic()	# everything but list	
+is_list()
+is_vector() # atomic & list
+
+# Each predicate also comes with a “scalar” version, like is_scalar_atomic(), which checks that the length is 1.
+```
+
