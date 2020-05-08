@@ -2050,3 +2050,15 @@ is.na(x)
 is.nan(x)
 ```
 
+### Character
+
+### Missing values
+
+```{r missing}
+typeof(NA)
+typeof(NA_integer_)
+typeof(NA_real_)
+typeof(NA_character_)
+```
+
+
