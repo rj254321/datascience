@@ -2169,3 +2169,25 @@ z <- list(list(1, 2), list(3, 4))
 str(z)
 ```
 
+### Visualizing lists
+
+### Subsetting
+
+```{r list subset}
+(a <- list(a = 1:3, b = "a string", c = pi, d = list(-1, -5)))
+
+# [ extracts a sub-list. The result will always be a list.
+str(a[1:2])
+str(a[4])
+# Like with vectors, you can subset with a logical, integer, or character vector.
+
+# [[ extracts a single component from a list. It removes a level of hierarchy from the list.
+str(a[[1]])
+str(a[[4]])
+
+# $ is a shorthand for extracting named elements of a list. It works similarly to [[ except that you don’t need to use quotes.
+a$a
+a[["a"]]
+```
+
+
