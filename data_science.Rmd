@@ -2255,5 +2255,17 @@ attributes(y)
 #> $tzone
 #> [1] "US/Eastern" "EST"        "EDT"
 # POSIXct’s are always easier to work with, so if you find you have a POSIXlt, you should always convert it to a regular data time lubridate::as_date_time().
+
+hms(3600)
+```
+
+## Tibbles
+
+```{r tibble}
+# Tibbles are augmented lists: they have class “tbl_df” + “tbl” + “data.frame”, and names (column) and row.names attributes.
+tb <- tibble(x = 1:5, y = 5:1)
+typeof(tb) # list
+attributes(tb)
+# The difference between a tibble and a list is that all the elements of a data frame must be vectors with the same length.
 ```
 
