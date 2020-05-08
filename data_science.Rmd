@@ -2153,3 +2153,19 @@ x[-which(x > 0)]
 x[x <= 0]
 ```
 
+## Recursive vectors (lists)
+
+```{r list}
+# lists can contain other lists. This makes them suitable for representing hierarchical or tree-like structures.
+(x <- list(1, 2, 3))
+str(x)
+(x_named <- list(a = 1, b = 2, c = 3))
+str(x_named)
+y <- list("a", 1L, 1.5, TRUE)
+str(y)
+
+# Lists can even contain other lists!
+z <- list(list(1, 2), list(3, 4))
+str(z)
+```
+
