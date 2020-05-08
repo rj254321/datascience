@@ -2094,3 +2094,18 @@ is_vector() # atomic & list
 # Each predicate also comes with a “scalar” version, like is_scalar_atomic(), which checks that the length is 1.
 ```
 
+### Scalars and recycling rules
+
+```{r scalar recycle}
+# vector recycling: because the shorter vector is repeated, or recycled, to the same length as the longer vector.
+1:10 + 1:2
+# This is silent except when the length of the longer is not an integer multiple of the length of the shorter.
+1:10 + 1:3
+
+# the vectorised functions in tidyverse will throw errors when you recycle anything other than a scalar. If you do want to recycle, you’ll need to do it yourself with rep().
+tibble(x = 1:4, y = 1:2)
+tibble(x = 1:4, y = 1)
+tibble(x = 1:4, y = rep(1:2, 2))
+tibble(x = 1:4, y = rep(1:2, each = 2))
+```
+
