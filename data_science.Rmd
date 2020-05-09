@@ -2269,3 +2269,12 @@ attributes(tb)
 # The difference between a tibble and a list is that all the elements of a data frame must be vectors with the same length.
 ```
 
+# Model introduction
+
+If you are serious about doing an confirmatory analysis, one approach is to split your data into three pieces before you begin the analysis:
+
+* 60% of your data goes into a training (or exploration) set. You’re allowed to do anything you like with this data: visualise it and fit tons of models to it.
+
+* 20% goes into a query set. You can use this data to compare models or visualisations by hand, but you’re not allowed to use it as part of an automated process.
+
+* 20% is held back for a test set. You can only use this data ONCE, to test your final model.
