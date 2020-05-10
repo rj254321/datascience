@@ -2278,3 +2278,50 @@ If you are serious about doing an confirmatory analysis, one approach is to spli
 * 20% goes into a query set. You can use this data to compare models or visualisations by hand, but you’re not allowed to use it as part of an automated process.
 
 * 20% is held back for a test set. You can only use this data ONCE, to test your final model.
+
+# Model Basics
+
+## A simple model
+
+```{r simple model}
+models <- tibble(
+  a1 = runif(250, -20, 40),
+  a2 = runif(250, -5, 5)
+)
+ggplot(sim1, aes(x, y)) + 
+  geom_abline(aes(intercept = a1, slope = a2), data = models, alpha = 1/4) +
+  geom_point() 
+
+model1 <- function(a, data) {
+  a[1] + data$x * a[2]
+} # predict
+model1(c(7, 1.5), sim1)
+
+measure_distance <- function(mod, data) {
+  diff <- data$y - model1(mod, data)
+  sqrt(mean(diff ^ 2))
+} # least mean square
+measure_distance(c(7, 1.5), sim1)
+
+sim1_dist <- function(a1, a2) {
+  measure_distance(c(a1, a2), sim1)
+} # a helper function because distance function expects the model as a numeric vector of length 2.
+models <- models %>% 
+  mutate(dist = map2_dbl(a1, a2, sim1_dist))
+models
+
+ggplot(sim1, aes(x, y)) + 
+  geom_point(size = 2, color = "grey30") + 
+  geom_abline(
+    aes(intercept = a1, slope = a2, color = - dist), # color = - dist: the smallest distance get the brighest colour
+    data = filter(models, rank(dist) <= 10)
+  )
+
+# a numerical minimisation tool called Newton-Raphson search. you pick a starting point and look around for the steepest slope. You then ski down that slope a little way, and then repeat again and again, until you can’t go any lower. In R, we can do that with optim()
+best <- optim(c(0, 0), measure_distance, data = sim1)
+best$par
+ggplot(sim1, aes(x, y)) + 
+  geom_point(size = 2, colour = "grey30") + 
+  geom_abline(intercept = best$par[1], slope = best$par[2])
+```
+
