@@ -2285,7 +2285,7 @@ seq_along(y)
 
 out <- ""
 for (x in letters) {
-  out <- stringr::str_c(out, x)
+  out <- str_c(out, x)
 }
 
 x <- sample(100)
@@ -2294,6 +2294,7 @@ for (i in seq_along(x)) {
   sd <- sd + (x[i] - mean(x)) ^ 2
 }
 sd <- sqrt(sd / (length(x) - 1))
+# sd(x)
 
 x <- runif(100)
 out <- vector("numeric", length(x))
@@ -2301,6 +2302,12 @@ out[1] <- x[1]
 for (i in 2:length(x)) {
   out[i] <- out[i - 1] + x[i]
 }
+
+output <- vector("integer", 0)
+for (i in seq_along(x)) {
+  output <- c(output, lengths(x[[i]]))
+}
+output
 ```
 
 
