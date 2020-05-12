@@ -2282,6 +2282,25 @@ seq_along(y)
 1:length(y) # you’re likely to get a confusing error message.
 
 # The body: output[[i]] <- median(df[[i]]). This is the code that does the work. It’s run repeatedly, each time with a different value for i. 
+
+out <- ""
+for (x in letters) {
+  out <- stringr::str_c(out, x)
+}
+
+x <- sample(100)
+sd <- 0
+for (i in seq_along(x)) {
+  sd <- sd + (x[i] - mean(x)) ^ 2
+}
+sd <- sqrt(sd / (length(x) - 1))
+
+x <- runif(100)
+out <- vector("numeric", length(x))
+out[1] <- x[1]
+for (i in 2:length(x)) {
+  out[i] <- out[i - 1] + x[i]
+}
 ```
 
 
