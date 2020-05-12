@@ -2269,6 +2269,22 @@ attributes(tb)
 # The difference between a tibble and a list is that all the elements of a data frame must be vectors with the same length.
 ```
 
+# Iteration
+
+## For loops
+
+```{r for loop}
+# The output: output <- vector("double", length(x)). Before you start the loop, you must always allocate sufficient space for the output. 
+
+# The sequence: i in seq_along(df). This determines what to loop over: each run of the for loop will assign i to a different value from seq_along(df). It’s useful to think of i as a pronoun, like “it”. It’s a safe version of the familiar 1:length(l), with an important difference: if you have a zero-length vector, seq_along() does the right thing.
+y <- vector("double", 0)
+seq_along(y)
+1:length(y) # you’re likely to get a confusing error message.
+
+# The body: output[[i]] <- median(df[[i]]). This is the code that does the work. It’s run repeatedly, each time with a different value for i. 
+```
+
+
 # Model introduction
 
 If you are serious about doing an confirmatory analysis, one approach is to split your data into three pieces before you begin the analysis:
