@@ -2320,6 +2320,39 @@ output
 
 * Handling sequences of unknown length.
 
+## Modifying an existing object
+
+```{r modify existing}
+# original rescale:
+df <- tibble(
+  a = rnorm(10),
+  b = rnorm(10),
+  c = rnorm(10),
+  d = rnorm(10)
+)
+rescale01 <- function(x) {
+  rng <- range(x, na.rm = TRUE)
+  (x - rng[1]) / (rng[2] - rng[1])
+}
+
+df$a <- rescale01(df$a)
+df$b <- rescale01(df$b)
+df$c <- rescale01(df$c)
+df$d <- rescale01(df$d)
+
+# for loop modification: 
+# Output: we already have the output — it’s the same as the input!
+# Sequence: we can think about a data frame as a list of columns, so we can iterate over each column with seq_along(df).
+# Body: apply rescale01().
+for (i in seq_along(df)) { # seq_along(df) = 1 2 3 4
+  df[[i]] <- rescale01(df[[i]])
+}
+# Typically you’ll be modifying a list or data frame with this sort of loop, so remember to use [[, not [. You might have spotted that I used [[ in all my for loops: I think it’s better to use [[ even for atomic vectors because it makes it clear that I want to work with a single element.
+typeof(df[[1]]) # vector
+typeof(df[1]) # list
+```
+
+
 # Model introduction
 
 If you are serious about doing an confirmatory analysis, one approach is to split your data into three pieces before you begin the analysis:
