@@ -2352,6 +2352,21 @@ typeof(df[[1]]) # vector
 typeof(df[1]) # list
 ```
 
+### Looping patterns
+
+```{r loop pattern}
+# There are three basic ways to loop over a vector. looping over the numeric indices with for (i in seq_along(xs)), and extracting the value with x[[i]].
+# Loop over the elements: for (x in xs). This is most useful if you only care about side-effects, like plotting or saving a file, because it’s difficult to save the output efficiently.
+# Loop over the names: for (nm in names(xs)). This gives you name, which you can use to access the value with x[[nm]]. This is useful if you want to use the name in a plot title or a file name. If you’re creating named output, make sure to name the results vector like so:
+results <- vector("list", length(x))
+names(results) <- names(x)
+
+for (i in seq_along(x)) {
+  name <- names(x)[[i]]
+  value <- x[[i]]
+}
+```
+
 
 # Model introduction
 
