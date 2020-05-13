@@ -2310,6 +2310,15 @@ for (i in seq_along(x)) {
 output
 ```
 
+## For loop variation
+
+* Modifying an existing object, instead of creating a new object.
+
+* Looping over names or values, instead of indices.
+
+* Handling outputs of unknown length.
+
+* Handling sequences of unknown length.
 
 # Model introduction
 
