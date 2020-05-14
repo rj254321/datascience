@@ -2439,6 +2439,50 @@ for (var in names(trans)) {
 }
 ```
 
+## For loops vs. functionals
+
+```{r functional}
+f1 <- function(x) abs(x - mean(x)) ^ 1
+f2 <- function(x) abs(x - mean(x)) ^ 2
+f3 <- function(x) abs(x - mean(x)) ^ 3
+f <- function(x, i) abs(x - mean(x)) ^ i
+
+col_summary <- function(df, fun) {
+  out <- vector("double", length(df))
+  for (i in seq_along(df)) {
+    if (is.numeric(df[[i]]) == T){ # only apply to numeric columns
+      out[i] <- fun(df[[i]]) # [[]]: vector; []: list
+    } else {
+      out[i] <- NA_real_
+    }
+  }
+  out
+}
+df <- tibble(
+  a = rnorm(10),
+  b = rnorm(10),
+  c = rnorm(10),
+  d = rnorm(10),
+  e = c("a", "b", "c", "d", "e", "f", "g", "h", "i", "j")
+)
+col_summary(df, mean)
+col_summary(df, sd)
+# The idea of passing a function to another function is an extremely powerful idea, and it’s one of the behaviours that makes R a functional programming language.
+
+num_summary <- function(var) {
+  out <- vector("double", 4)
+  out[[1]] <- mean(var)
+  out[[2]] <- sd(var)
+  out[[3]] <- median(var)
+  out[[4]] <- IQR(var)
+  out
+}
+num_summary(df$a)
+num_summary(df$d)
+
+# apply(X, MARGIN, FUN, ...): Returns a vector or array or list of values obtained by applying a function to margins of an array or matrix.
+```
+
 
 # Model introduction
 
