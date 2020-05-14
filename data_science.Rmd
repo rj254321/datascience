@@ -2541,6 +2541,37 @@ x <- list(list(1, 2, 3), list(4, 5, 6), list(7, 8, 9))
 x %>% map_dbl(2)
 ```
 
+### Base R
+
+```{r base r}
+# lapply returns a list of the same length as X, each element of which is the result of applying FUN to the corresponding element of X.
+# sapply is a user-friendly version and wrapper of lapply by default returning a vector, matrix or, if simplify = "array", an array if appropriate, by applying simplify2array(). sapply(x, f, simplify = FALSE, USE.NAMES = FALSE) is the same as lapply(x, f).
+# vapply is similar to sapply, but has a pre-specified type of return value, so it can be safer (and sometimes faster) to use.
+
+# lapply() is basically identical to map(), except that map() is consistent with all the other functions in purrr, and you can use the shortcuts for .f.
+
+# Base sapply() is a wrapper around lapply() that automatically simplifies the output. This is useful for interactive work but is problematic in a function because you never know what sort of output you’ll get:
+x1 <- list(
+  c(0.27, 0.37, 0.57, 0.91, 0.20),
+  c(0.90, 0.94, 0.66, 0.63, 0.06), 
+  c(0.21, 0.18, 0.69, 0.38, 0.77)
+)
+x2 <- list(
+  c(0.50, 0.72, 0.99, 0.38, 0.78), 
+  c(0.93, 0.21, 0.65, 0.13, 0.27), 
+  c(0.39, 0.01, 0.38, 0.87, 0.34)
+)
+
+threshold <- function(x, cutoff = 0.8) x[x > cutoff]
+x1 %>% sapply(threshold) %>% str()
+
+# vapply() is a safe alternative to sapply() because you supply an additional argument that defines the type. vapply(df, is.numeric, logical(1)) is equivalent to map_lgl(df, is.numeric). One advantage of vapply() over purrr’s map functions is that it can also produce matrices — the map functions only ever produce vectors.
+
+purrr::map(1:5, runif)
+purrr::map(-2:2, rnorm, n = 5) 
+map_dbl(-2:2, rnorm, n = 5) # Error: Result 1 must be a single double, not a double vector of length 5
+```
+
 
 # Model introduction
 
