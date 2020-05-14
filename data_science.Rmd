@@ -2515,6 +2515,32 @@ z <- list(x = 1:3, y = 4:5)
 map_int(z, length)
 ```
 
+### Shortcuts
+
+```{r shortcut}
+#  split up the mtcars dataset into three pieces (one for each value of cylinder) and fit the same linear model to each piece:
+models <- mtcars %>% 
+  split(.$cyl) %>% 
+  purrr::map(function(df) lm(mpg ~ wt, data = df)) # create an anonymous function inside map()
+
+models <- mtcars %>% 
+  split(.$cyl) %>% 
+  purrr::map(~lm(mpg ~ wt, data = .))
+# "." as a pronoun: it refers to the current list element (in the same way that i referred to the current index in the for loop).
+
+# extract a common summary statistics
+models %>% 
+  purrr::map(summary) %>% 
+  map_dbl(~.$r.squared)
+models %>% 
+  purrr::map(summary) %>% 
+  map_dbl("r.squared")
+
+# use an integer to select elements by position
+x <- list(list(1, 2, 3), list(4, 5, 6), list(7, 8, 9))
+x %>% map_dbl(2)
+```
+
 
 # Model introduction
 
