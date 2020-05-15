@@ -2451,7 +2451,7 @@ col_summary <- function(df, fun) {
   out <- vector("double", length(df))
   for (i in seq_along(df)) {
     if (is.numeric(df[[i]]) == T){ # only apply to numeric columns
-      out[i] <- fun(df[[i]]) # [[]]: vector; []: list
+      out[[i]] <- fun(df[[i]]) # for list/data.frame, [[]]: vector; []: list
     } else {
       out[i] <- NA_real_
     }
@@ -2463,7 +2463,7 @@ df <- tibble(
   b = rnorm(10),
   c = rnorm(10),
   d = rnorm(10),
-  #e = c("a", "b", "c", "d", "e", "f", "g", "h", "i", "j")
+  e = c("a", "b", "c", "d", "e", "f", "g", "h", "i", "j")
 )
 col_summary(df, mean)
 col_summary(df, sd)
@@ -2480,18 +2480,55 @@ num_summary <- function(var) {
 num_summary(df$a)
 num_summary(df$d)
 
-desp <- function(df) {
+desp_num <- function(df) {
   out <- vector("list", length(df))
   for (i in seq_along(df)) {
-    out[i] <- list(name = names(df[i]),
-                  mean = mean(df[[i]]),
-                  sd = sd(df[[i]]),
-                  median = median(df[[i]]),
-                  iqr = IQR(df[[i]]))
+    if (is.numeric(df[[i]])) {
+    out[[i]] <- list(name = names(df[i]),
+                  mean = mean(df[[i]], na.rm = T),
+                  sd = sd(df[[i]], na.rm = T),
+                  median = median(df[[i]], na.rm = T),
+                  iqr = quantile(df[[i]], probs = c(0.25, 0.75), na.rm = T))
+    } else {
+    out[[i]] <- NA
+  }
   }
   out
 }
-desp(df)
+desp_num(df)
+
+desp_num1 <- function(df) {
+  out <- vector("list", length(df))
+  for (i in seq_along(df)) {
+    if (is.numeric(df[[i]])) {
+    out[[i]] <- df %>% 
+      summarise(name = names(df[i]),
+                mean = mean(df[[i]], na.rm = T),
+                sd = sd(df[[i]], na.rm = T),
+                median = median(df[[i]], na.rm = T),
+                q1 = quantile(df[[i]], probs = 0.25, na.rm = T),
+                q3 = quantile(df[[i]], probs = 0.75, na.rm = T))
+    } else {
+    out[[i]] <- NA
+  }
+  }
+  out
+}
+desp_num1(df)
+
+desp_char <- function(df) {
+  out <- vector("list", length(df))
+  for (i in seq_along(df)) {
+    if (is.character(df[[i]])) {
+    out[[i]] <- list(name = names(df[i]),
+                  df %>% count_by(df[[i]]))
+    } else {
+    out[[i]] <- NA
+  }
+  }
+  out
+}
+desp_char(df)
 
 # apply(X, MARGIN, FUN, ...): Returns a vector or array or list of values obtained by applying a function to margins of an array or matrix.
 ```
@@ -2613,6 +2650,18 @@ x %>% map_dbl(possibly(log, NA_real_))
 # quietly() performs a similar role to safely(), but instead of capturing errors, it captures printed output, warnings, and messages
 x <- list(1, -1)
 x %>% purrr::map(quietly(log)) %>% str()
+```
+
+## Mapping over multiple arguments
+
+```{r map argument}
+mu <- list(5, 10, -3)
+sigma <- list(1, 5, 10)
+# map2() iterates over two vectors in parallel. The arguments that vary for each call come before the function; arguments that are the same for every call come after.
+map2(mu, sigma, rnorm, n = 5) %>% str()
+# rnorm(mean = 5, sd = 1, n = 5)
+# rnorm(mean = 10, sd = 5, n = 5)
+# rnorm(mean = -3, sd = 10, n = 5)
 ```
 
 
