@@ -2709,6 +2709,25 @@ sim %>%
   str() # unlist(sim)
 ```
 
+## Walk
+
+```{r walk}
+# Walk is an alternative to map that you use when you want to call a function for its side effects, rather than for its return value. You typically do this because you want to render output to the screen or save files to disk. 
+x <- list(1, "a", 3)
+x %>% 
+  walk(print)
+
+# if you had a list of plots and a vector of file names, you could use pwalk() to save each file to the corresponding location on disk:
+plots <- mtcars %>% 
+  split(.$cyl) %>% 
+  purrr::map(~ ggplot(., aes(mpg, wt)) + geom_point())
+paths <- str_c(names(plots), ".pdf")
+
+pwalk(list(paths, plots), ggsave, path = tempdir())
+
+# walk(), walk2() and pwalk() all invisibly return .x, the first argument. This makes them suitable for use in the middle of pipelines.
+```
+
 
 # Model introduction
 
