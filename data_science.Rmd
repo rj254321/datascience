@@ -2686,6 +2686,29 @@ params %>%
   pmap(rnorm)
 ```
 
+### Invoking different functions
+
+```{r invoke functions}
+f <- c("runif", "rnorm", "rpois")
+param <- list(
+  list(min = -1, max = 1), 
+  list(sd = 5), 
+  list(lambda = 10)
+)
+invoke_map(f, param, n = 5) %>% str()
+# The first argument is a list of functions or character vector of function names. The second argument is a list of lists giving the arguments that vary for each function. The subsequent arguments are passed on to every function.
+
+sim <- tribble(
+  ~f,      ~params,
+  "runif", list(min = -1, max = 1),
+  "rnorm", list(sd = 5),
+  "rpois", list(lambda = 10)
+)
+sim %>% 
+  mutate(sim = invoke_map(f, params, n = 10)) %>% 
+  str() # unlist(sim)
+```
+
 
 # Model introduction
 
