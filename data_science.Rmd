@@ -2728,6 +2728,48 @@ pwalk(list(paths, plots), ggsave, path = tempdir())
 # walk(), walk2() and pwalk() all invisibly return .x, the first argument. This makes them suitable for use in the middle of pipelines.
 ```
 
+## Other patterns of for loops
+
+### Predicate functions
+
+```{r predicate}
+# keep() and discard() keep elements of the input where the predicate is TRUE or FALSE respectively.
+iris %>% 
+  keep(is.factor) %>% 
+  str()
+
+iris %>% 
+  discard(is.factor) %>% 
+  str()
+iris %>% 
+  keep(is.numeric) %>% 
+  str()
+
+# some() and every() determine if the predicate is true for any or for all of the elements.
+x <- list(1:5, letters, list(10))
+
+x %>% 
+  some(is_character)
+x %>% 
+  every(is_character)
+x %>% 
+  every(is_vector)
+
+# detect() finds the first element where the predicate is true; detect_index() returns its position.
+(x <- sample(10))
+
+x %>% 
+  detect(~ . > 5)
+x %>% 
+  detect_index(~ . > 5)
+
+# head_while() and tail_while() take elements from the start or end of a vector while a predicate is true.
+x %>% 
+  head_while(~ . > 4)
+x %>% 
+  tail_while(~ . > 4)
+```
+
 
 # Model introduction
 
