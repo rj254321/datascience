@@ -2770,6 +2770,46 @@ x %>%
   tail_while(~ . > 4)
 ```
 
+### Reduce and accumulate
+
+```{r reduce accumulate}
+# Sometimes you have a complex list that you want to reduce to a simple list by repeatedly applying a function that reduces a pair to a singleton. 
+# The reduce function takes a “binary” function (i.e. a function with two primary inputs), and applies it repeatedly to a list until there is only a single element left.
+dfs <- list(
+  age = tibble(
+    name = "John", 
+    age = 30
+    ),
+  sex = tibble(
+    name = c("John", "Mary"), 
+    sex = c("M", "F")
+    ),
+  trt = tibble(
+    name = "Mary", 
+    treatment = "A"
+    )
+)
+
+dfs %>% reduce(full_join)
+dfs %>% reduce(left_join)
+dfs %>% reduce(right_join)
+
+vs <- list(
+  c(1, 3, 5, 6, 10),
+  c(1, 2, 3, 7, 8, 10),
+  c(1, 2, 3, 4, 8, 9, 10)
+)
+
+vs %>% reduce(intersect)
+
+# Accumulate is similar but it keeps all the interim results. You could use it to implement a cumulative sum:
+(x <- sample(10))
+x %>% 
+  accumulate(`+`)
+x %>% 
+  accumulate(sum)
+```
+
 
 # Model introduction
 
