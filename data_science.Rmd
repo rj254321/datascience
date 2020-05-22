@@ -2888,3 +2888,19 @@ sim1_mod <- lm(y ~ x, data = sim1)
 coef(sim1_mod)
 ```
 
+## Visualizing models
+
+### Predictions
+
+```{r prediction}
+# generate an evenly spaced grid of values that covers the region where our data lies. The easiest way to do that is to use modelr::data_grid(). Its first argument is a data frame, and for each subsequent argument it finds the unique variables and then generates all combinations:
+grid <- sim1 %>% 
+  data_grid(x)
+grid <- grid %>% 
+  add_predictions(sim1_mod)
+
+ggplot(sim1, aes(x)) +
+  geom_point(aes(y = y)) +
+  geom_line(aes(y = pred), data = grid, color = "red", size = 1)
+```
+
