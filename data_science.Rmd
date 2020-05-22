@@ -2881,5 +2881,10 @@ best$par
 ggplot(sim1, aes(x, y)) + 
   geom_point(size = 2, colour = "grey30") + 
   geom_abline(intercept = best$par[1], slope = best$par[2])
+# If you have a function that defines the distance between a model and a dataset, an algorithm that can minimise that distance by modifying the parameters of the model, you can find the best model. The neat thing about this approach is that it will work for any family of models that you can write an equation for.
+
+# lm() doesn’t use optim() but instead takes advantage of the mathematical structure of linear models. Using some connections between geometry, calculus, and linear algebra, lm() actually finds the closest model in a single step, using a sophisticated algorithm. This approach is both faster, and guarantees that there is a global minimum.
+sim1_mod <- lm(y ~ x, data = sim1)
+coef(sim1_mod)
 ```
 
