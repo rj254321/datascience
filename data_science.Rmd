@@ -2904,3 +2904,19 @@ ggplot(sim1, aes(x)) +
   geom_line(aes(y = pred), data = grid, color = "red", size = 1)
 ```
 
+### Residuals
+
+```{r residual}
+sim1 <- sim1 %>% 
+  add_residuals(sim1_mod)
+
+ggplot(sim1, aes(resid)) + 
+  geom_freqpoly(binwidth = 0.5)
+# the spread of residuals is not that helpful. the average of the residual will always be 0.
+
+ggplot(sim1, aes(x, resid)) + 
+  geom_ref_line(h = 0) + # reference line: residual = 0
+  geom_point() 
+# This looks like random noise, suggesting that our model has done a good job of capturing the patterns in the dataset.
+```
+
