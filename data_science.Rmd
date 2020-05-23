@@ -2920,3 +2920,43 @@ ggplot(sim1, aes(x, resid)) +
 # This looks like random noise, suggesting that our model has done a good job of capturing the patterns in the dataset.
 ```
 
+## Formulas and model families
+
+```{r formula}
+df <- tribble(
+  ~y, ~x1, ~x2,
+  4, 2, 5,
+  5, 1, 6
+)
+model_matrix(df, y ~ x1)
+# The way that R adds the intercept to the model is just by having a column that is full of ones. By default, R will always add this column. If you don’t want, you need to explicitly drop it with -1.
+model_matrix(df, y ~ x1 - 1)
+model_matrix(df, y ~ x1 + x2)
+```
+
+### Categorical variables
+
+```{r categorical var}
+df <- tribble(
+  ~ sex, ~ response,
+  "male", 1,
+  "female", 2,
+  "male", 1
+)
+model_matrix(df, response ~ sex) # dummy variables
+
+ggplot(sim2) + 
+  geom_point(aes(x, y))
+mod2 <- lm(y ~ x, data = sim2)
+grid <- sim2 %>% 
+  data_grid(x) %>% 
+  add_predictions(mod2)
+grid
+ggplot(sim2, aes(x)) + 
+  geom_point(aes(y = y)) +
+  geom_point(data = grid, aes(y = pred), color = "red", size = 4)
+
+tibble(x = "e") %>% 
+  add_predictions(mod2)
+```
+
