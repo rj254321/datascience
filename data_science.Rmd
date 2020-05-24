@@ -2960,3 +2960,38 @@ tibble(x = "e") %>%
   add_predictions(mod2)
 ```
 
+### Interactions (continuous and categorical)
+
+```{r interaction}
+ggplot(sim3, aes(x1, y)) + 
+  geom_point(aes(color = x2))
+
+mod1 <- lm(y ~ x1 + x2, data = sim3)
+mod2 <- lm(y ~ x1 * x2, data = sim3) # x1 + x2 + x1 * x2
+
+# We have two predictors, so we need to give data_grid() both variables. It finds all the unique values of x1 and x2 and then generates all combinations.
+# To generate predictions from both models simultaneously, we can use gather_predictions() which adds each prediction as a row. The complement of gather_predictions() is spread_predictions() which adds each prediction to a new column.
+(grid <- sim3 %>% 
+  data_grid(x1, x2) %>% 
+  gather_predictions(mod1, mod2))
+sim3 %>% 
+  data_grid(x1, x2) %>% 
+  spread_predictions(mod1, mod2)
+ggplot(sim3, aes(x1, y, color = x2)) + 
+  geom_point() + 
+  geom_line(data = grid, aes(y = pred)) + 
+  facet_wrap(~ model) # facet_grid(~ model)
+# The model that uses + has the same slope for each line, but different intercepts. The model that uses * has a different slope and intercept for each line.
+
+# Which model is better for this data? We can take look at the residuals. Here I’ve facetted by both model and x2 because it makes it easier to see the pattern within each group.
+sim3 <- sim3 %>% 
+  gather_residuals(mod1, mod2)
+sim3 %>% 
+  spread_residuals(mod1, mod2)
+
+ggplot(sim3, aes(x = x1, y = resid, color = x2)) + 
+  geom_point() + 
+  facet_grid(model ~ x2)
+# There is little obvious pattern in the residuals for mod2. The residuals for mod1 show that the model has clearly missed some pattern in b, and less so, but still present is pattern in c, and d. You might wonder if there’s a precise way to tell which of mod1 or mod2 is better. There is, but it requires a lot of mathematical background, and we don’t really care. Here, we’re interested in a qualitative assessment of whether or not the model has captured the pattern that we’re interested in.
+```
+
