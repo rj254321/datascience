@@ -2991,7 +2991,7 @@ sim3 %>%
 
 ggplot(sim3, aes(x = x1, y = resid, color = x2)) + 
   geom_point() + 
-  facet_grid(model ~ x2)
+  facet_grid(model ~ x2) # row by model, column by x2
 # There is little obvious pattern in the residuals for mod2. The residuals for mod1 show that the model has clearly missed some pattern in b, and less so, but still present is pattern in c, and d. You might wonder if there’s a precise way to tell which of mod1 or mod2 is better. There is, but it requires a lot of mathematical background, and we don’t really care. Here, we’re interested in a qualitative assessment of whether or not the model has captured the pattern that we’re interested in.
 ```
 
