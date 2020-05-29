@@ -2962,7 +2962,7 @@ tibble(x = "e") %>%
 
 ### Interactions (continuous and categorical)
 
-```{r interaction}
+```{r interaction cont and cat}
 ggplot(sim3, aes(x1, y)) + 
   geom_point(aes(color = x2))
 
@@ -2992,6 +2992,56 @@ sim3 %>%
 ggplot(sim3, aes(x = x1, y = resid, color = x2)) + 
   geom_point() + 
   facet_grid(model ~ x2) # row by model, column by x2
-# There is little obvious pattern in the residuals for mod2. The residuals for mod1 show that the model has clearly missed some pattern in b, and less so, but still present is pattern in c, and d. You might wonder if there’s a precise way to tell which of mod1 or mod2 is better. There is, but it requires a lot of mathematical background, and we don’t really care. Here, we’re interested in a qualitative assessment of whether or not the model has captured the pattern that we’re interested in.
+# There is little obvious pattern in the residuals for mod2. The residuals for mod1 show that the model has clearly missed some pattern in b, and less so, but still present is pattern in c, and d. Here, we’re interested in a qualitative assessment of whether or not the model has captured the pattern that we’re interested in.
+```
+
+### Interactions (two continuous)
+
+```{r interaction cont and cont}
+mod1 <- lm(y ~ x1 + x2, data = sim4)
+mod2 <- lm(y ~ x1 * x2, data = sim4)
+
+grid <- sim4 %>% 
+  data_grid(
+    x1 = seq_range(x1, 5), 
+    x2 = seq_range(x2, 5) 
+  ) %>% 
+  gather_predictions(mod1, mod2)
+grid
+
+# Note the use of seq_range() inside data_grid(). Instead of using every unique value of x, going to use a regularly spaced grid of five values between the minimum and maximum numbers.
+# pretty = TRUE will generate a “pretty” sequence, i.e. something that looks nice to the human eye. This is useful if you want to produce tables of output:
+seq_range(c(0.0123, 0.923423), n = 5)
+seq_range(c(0.0123, 0.923423), n = 5, pretty = TRUE)
+# trim = 0.1 will trim off 10% of the tail values. This is useful if the variables have a long tailed distribution and you want to focus on generating values near the center:
+x1 <- rcauchy(100)
+seq_range(x1, n = 5)
+seq_range(x1, n = 5, trim = 0.05)
+seq_range(x1, n = 5, trim = 0.10)
+# expand = 0.1 is in some sense the opposite of trim() it expands the range by 10%:
+x2 <- c(0, 1)
+seq_range(x2, n = 5)
+seq_range(x2, n = 5, expand = 0.10)
+seq_range(x2, n = 5, expand = 0.25)
+
+ggplot(grid, aes(x1, x2)) + 
+  geom_tile(aes(fill = pred)) + 
+  facet_wrap(~ model)
+ggplot(grid, aes(x1, pred, color = x2, group = x2)) + 
+  geom_line() +
+  facet_wrap(~ model)
+ggplot(grid, aes(x2, pred, color = x1, group = x1)) + 
+  geom_line() +
+  facet_wrap(~ model)
+# An interaction says that there’s not a fixed offset: you need to consider both values of x1 and x2 simultaneously in order to predict y.
+
+sim4 <- sim4 %>% 
+  gather_residuals(mod1, mod2)
+sim3 %>% 
+  spread_residuals(mod1, mod2)
+
+ggplot(sim4, aes(x = x1, y = resid, color = x2)) + 
+  geom_point() + 
+  facet_grid(~ model)
 ```
 
