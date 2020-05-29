@@ -20,6 +20,7 @@ library(stringi)
 library(tidytidbits)
 library(lubridate)
 library(magrittr)
+library(splines)
 ```
 
 ```{r data load}
@@ -3043,5 +3044,47 @@ sim3 %>%
 ggplot(sim4, aes(x = x1, y = resid, color = x2)) + 
   geom_point() + 
   facet_grid(~ model)
+```
+
+### Transformations
+
+```{r transformation}
+# If your transformation involves +, *, ^, or -, you’ll need to wrap it in I() so R doesn’t treat it like part of the model specification. e.g., y ~ x + I(x ^ 2) is translated to y = a_1 + a_2 * x + a_3 * x^2. If you specify y ~ x ^ 2 + x, R will compute y ~ x * x + x. x * x means the interaction of x with itself, which is the same as x. R automatically drops redundant variables so x + x become x, meaning that y ~ x ^ 2 + x specifies the function y = a_1 + a_2 * x. That’s probably not what you intended!
+df <- tribble(
+  ~y, ~x,
+   1,  1,
+   2,  2, 
+   3,  3
+)
+model_matrix(df, y ~ x^2 + x)
+model_matrix(df, y ~ I(x^2) + x)
+
+# Taylor’s theorem: you can approximate any smooth function with an infinite sum of polynomials. That means you can use a polynomial function to get arbitrarily close to a smooth function by fitting an equation like y = a_1 + a_2 * x + a_3 * x^2 + a_4 * x ^ 3.
+model_matrix(df, y ~ poly(x, 2))
+
+# However there’s one major problem with using poly(): outside the range of the data, polynomials rapidly shoot off to positive or negative infinity. One safer alternative is to use the natural spline, splines::ns().
+model_matrix(df, y ~ ns(x, 2))
+
+sim5 <- tibble(
+  x = seq(0, 3.5 * pi, length = 50),
+  y = 4 * sin(x) + rnorm(length(x))
+)
+ggplot(sim5, aes(x, y)) +
+  geom_point()
+
+mod1 <- lm(y ~ ns(x, 1), data = sim5)
+mod2 <- lm(y ~ ns(x, 2), data = sim5)
+mod3 <- lm(y ~ ns(x, 3), data = sim5)
+mod4 <- lm(y ~ ns(x, 4), data = sim5)
+mod5 <- lm(y ~ ns(x, 5), data = sim5)
+
+grid <- sim5 %>% 
+  data_grid(x = seq_range(x, n = 50, expand = 0.1)) %>% 
+  gather_predictions(mod1, mod2, mod3, mod4, mod5, .pred = "y")
+
+ggplot(sim5, aes(x, y)) + 
+  geom_point() +
+  geom_line(data = grid, color = "red") +
+  facet_wrap(~ model)
 ```
 
