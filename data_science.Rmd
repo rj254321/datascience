@@ -3088,3 +3088,26 @@ ggplot(sim5, aes(x, y)) +
   facet_wrap(~ model)
 ```
 
+## Missing values
+
+```{r missing}
+# R’s default behaviour is to silently drop them, but options(na.action = na.warn) (run in the prerequisites), makes sure you get a warning.
+options(na.action = na.warn)
+df <- tribble(
+  ~x, ~y,
+  1, 2.2,
+  2, NA,
+  3, 3.5,
+  4, 8.3,
+  NA, 10
+)
+mod <- lm(y ~ x, data = df)
+# summary(mod): (2 observations deleted due to missingness)
+
+# suppress the warning
+mod <- lm(y ~ x, data = df, na.action = na.exclude)
+
+# You can always see exactly how many observations were used with nobs():
+nobs(mod)
+```
+
