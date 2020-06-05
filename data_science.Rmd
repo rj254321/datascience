@@ -3173,3 +3173,32 @@ ggplot(diamonds2, aes(clarity, lresid)) + geom_boxplot()
 # A residual of -1 indicates that lprice was 1 unit lower than a prediction based solely on its weight. 2^(−1) is 1/2, points with a value of -1 are half the expected price, and residuals with value 1 are twice the predicted price.
 ```
 
+### A more complicated model
+
+```{r complicated model}
+mod_diamond2 <- lm(lprice ~ lcarat + color + cut + clarity, data = diamonds2)
+
+# If the model needs variables that you haven’t explicitly supplied, data_grid() will automatically fill them in with “typical” value. For continuous variables, it uses the median, and categorical variables it uses the most common value (or values, if there’s a tie).
+grid <- diamonds2 %>% 
+  data_grid(cut, .model = mod_diamond2) %>% 
+  add_predictions(mod_diamond2)
+grid
+
+ggplot(grid, aes(cut, pred)) + 
+  geom_point()
+
+diamonds2 <- diamonds2 %>% 
+  add_residuals(mod_diamond2, "lresid2")
+
+ggplot(diamonds2, aes(lcarat, lresid2)) + 
+  geom_hex(bins = 50)
+
+# unusual values
+diamonds2 %>% 
+  filter(abs(lresid2) > 1) %>% # smaller than 1/2x or larger than 2x the price that we expected
+  add_predictions(mod_diamond2) %>% 
+  mutate(pred = round(2 ^ pred)) %>% 
+  select(price, pred, carat:table, x:z) %>% 
+  arrange(price)
+```
+
