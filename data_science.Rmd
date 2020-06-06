@@ -3202,3 +3202,62 @@ diamonds2 %>%
   arrange(price)
 ```
 
+## What affects the number of daily flights?
+
+```{r daily flights}
+daily <- flights %>% 
+  mutate(date = make_date(year, month, day)) %>% 
+  group_by(date) %>% 
+  summarise(n = n())
+daily
+
+ggplot(daily, aes(date, n)) + 
+  geom_line()
+```
+
+### Day of week
+
+```{r day of week}
+# Understanding the long-term trend is challenging because there’s a very strong day-of-week effect that dominates the subtler patterns. The distribution of flight numbers by day-of-week:
+daily <- daily %>% 
+  mutate(wday = wday(date, label = TRUE)) # label: Sun = 1, Mon = 2, ...
+ggplot(daily, aes(wday, n)) + 
+  geom_boxplot()
+
+# predictions
+mod <- lm(n ~ wday, data = daily)
+
+grid <- daily %>% 
+  data_grid(wday) %>% 
+  add_predictions(mod, "n")
+
+ggplot(daily, aes(wday, n)) + 
+  geom_boxplot() +
+  geom_point(data = grid, color = "red", size = 4)
+
+# residuals: the deviation from the expected number of flights, given the day of week. After removing much of the large day-of-week effect, we can see some of the subtler patterns that remain:
+daily <- daily %>% 
+  add_residuals(mod)
+daily %>% 
+  ggplot(aes(date, resid)) + 
+  geom_ref_line(h = 0) + 
+  geom_line()
+daily %>% 
+  ggplot(aes(date, resid)) + 
+  geom_ref_line(h = 0) + 
+  geom_point()
+# Our model seems to fail starting in June: you can still see a strong regular pattern that our model hasn’t captured. Our model fails to accurately predict the number of flights on Saturday: during summer there are more flights than we expect, and during Fall there are fewer. 
+ggplot(daily, aes(date, resid, colour = wday)) + 
+  geom_ref_line(h = 0) + 
+  geom_line()
+# There are some days with far fewer flights than expected:
+daily %>% 
+  filter(resid < -100) # new year, national, thanksgiving, christmas
+# There seems to be some smoother long term trend over the course of a year. We can highlight that trend with geom_smooth(): There are fewer flights in January (and December), and more in summer (May-Sep).
+daily %>% 
+  ggplot(aes(date, resid)) + 
+  geom_ref_line(h = 0) + 
+  geom_line(color = "grey50") + 
+  geom_smooth(se = FALSE, span = 0.20)
+```
+
