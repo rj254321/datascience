@@ -3327,3 +3327,20 @@ daily %>%
   scale_x_date(NULL, date_breaks = "1 month", date_labels = "%b")
 ```
 
+### Computed variables
+
+```{r computed var}
+# it’s a good idea to bundle the creation of variables up into a function so there’s no chance of accidentally applying a different transformation in different places. e.g., 
+compute_vars <- function(data) {
+  data %>% 
+    mutate(
+      term = term(date), 
+      wday = wday(date, label = TRUE)
+    )
+}
+# Another option is to put the transformations directly in the model formula:
+
+wday2 <- function(x) wday(x, label = TRUE)
+mod3 <- lm(n ~ wday2(date) * term(date), data = daily)
+```
+
