@@ -3406,3 +3406,21 @@ by_country$data[[1]]
 # in a grouped data frame, each row is an observation; in a nested data frame, each row is a group. Another way to think about a nested dataset is we now have a meta-observation: a row that represents the complete time course for a country, rather than a single point in time.
 ```
 
+### List-columns
+
+```{r list-column}
+country_model <- function(df) {
+  lm(lifeExp ~ year, data = df)
+}
+
+# instead of creating a new object in the global environment, we’re going to create a new variable in the by_country data frame. 
+by_country <- by_country %>% 
+  mutate(model = purrr::map(data, country_model))
+by_country$model[[1]]
+
+by_country %>% 
+  filter(continent == "Europe")
+by_country %>% 
+  arrange(continent, country)
+```
+
