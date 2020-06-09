@@ -3261,3 +3261,69 @@ daily %>%
   geom_smooth(se = FALSE, span = 0.20)
 ```
 
+### Seasonal Saturday effect
+
+```{r seasonal saturday}
+daily %>% 
+  filter(wday == "Sat") %>% 
+  ggplot(aes(date, n)) + 
+    geom_point() + 
+    geom_line() +
+    scale_x_date(NULL, date_breaks = "1 month", date_labels = "%b")
+
+# Lets create a “term” variable that roughly captures the three school terms.
+term <- function(date) {
+  cut(date, 
+    breaks = ymd(20130101, 20130605, 20130825, 20140101),
+    labels = c("spring", "summer", "fall") 
+  )
+}
+
+daily <- daily %>% 
+  mutate(term = term(date)) 
+
+daily %>% 
+  filter(wday == "Sat") %>% 
+  ggplot(aes(date, n, color = term)) +
+  geom_point(alpha = 1/3) + 
+  geom_line() +
+  scale_x_date(NULL, date_breaks = "1 month", date_labels = "%b")
+
+# how this new variable affects the other days of the week:
+daily %>% 
+  ggplot(aes(wday, n, colour = term)) +
+    geom_boxplot()
+
+# It looks like there is significant variation across the terms, so fitting a separate day of week effect for each term is reasonable. 
+mod1 <- lm(n ~ wday, data = daily)
+mod2 <- lm(n ~ wday * term, data = daily)
+
+daily %>% 
+  gather_residuals(without_term = mod1, with_term = mod2) %>% 
+  ggplot(aes(date, resid, color = model)) +
+  geom_line(alpha = 0.75) +
+  scale_x_date(NULL, date_breaks = "1 month", date_labels = "%b")
+
+grid <- daily %>% 
+  data_grid(wday, term) %>% 
+  add_predictions(mod2, "n")
+
+# Our model is finding the mean effect, but we have a lot of big outliers, so mean tends to be far away from the typical value. 
+ggplot(daily, aes(wday, n)) +
+  geom_boxplot() + 
+  geom_point(data = grid, color = "red") + 
+  facet_wrap(~ term)
+
+# We can alleviate this problem by using a model that is robust to the effect of outliers: MASS::rlm(). This greatly reduces the impact of the outliers on our estimates, and gives a model that does a good job of removing the day of week pattern:
+mod3 <- MASS::rlm(n ~ wday * term, data = daily)
+# Fit a linear model by robust regression using an M estimator. Fitting is done by iterated re-weighted least squares (IWLS). The idea is to weigh the observations differently based on how well behaved these observations are. In Huber weighting, observations with small residuals get a weight of 1 and the larger the residual, the smaller the weight. With bisquare weighting, all cases with a non-zero residual get down-weighted at least a little. 
+# https://stats.idre.ucla.edu/r/dae/robust-regression/
+
+daily %>% 
+  add_residuals(mod3, "resid") %>% 
+  ggplot(aes(date, resid)) + 
+  geom_hline(yintercept = 0, size = 2, color = "white") + # reference line: resid (y) = 0
+  geom_line() +
+  scale_x_date(NULL, date_breaks = "1 month", date_labels = "%b")
+```
+
