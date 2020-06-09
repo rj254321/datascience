@@ -3344,3 +3344,20 @@ wday2 <- function(x) wday(x, label = TRUE)
 mod3 <- lm(n ~ wday2(date) * term(date), data = daily)
 ```
 
+### Time of year: an alternative approach
+
+```{r time of year}
+# An alternative to using domain knowledge explicitly in the model is to use a more flexible model. A simple linear trend isn’t adequate, so we could try using a natural spline to fit a smooth curve across the year:
+mod <- MASS::rlm(n ~ wday * ns(date, 5), data = daily)
+# natural spline: 
+
+daily %>% 
+  data_grid(wday, date = seq_range(date, n = 13)) %>% 
+  add_predictions(mod) %>% 
+  ggplot(aes(date, pred, color = wday)) + 
+  geom_line() +
+  geom_point() +
+  scale_x_date(NULL, date_breaks = "1 month", date_labels = "%b")
+# We see a strong pattern in the numbers of Saturday flights. We also saw that pattern in the raw data. It’s a good sign when you get the same signal from different approaches.
+```
+
