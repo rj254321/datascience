@@ -3446,3 +3446,36 @@ resids %>%
   facet_wrap(~continent)
 ```
 
+### Model quality
+
+```{r model quality}
+# Instead of looking at the residuals from the model, we could look at some general measurements of model quality. to extract some model quality metrics:
+broom::glance(nz_mod)
+
+by_country %>% 
+  mutate(glance = purrr::map(model, broom::glance)) %>% 
+  unnest(glance)
+
+# This isn’t quite the output we want, because it still includes all the list columns. This is default behaviour when unnest() works on single row data frames. To suppress these columns we use .drop = TRUE. ?
+glance <- by_country %>% 
+  mutate(glance = purrr::map(model, broom::glance)) %>% 
+  unnest(glance, .drop = TRUE)
+glance
+
+glance %>% 
+  arrange(r.squared)
+
+# Here we have a relatively small number of observations and a discrete variable, so geom_jitter() is effective:
+glance %>% 
+  ggplot(aes(continent, r.squared)) + 
+    geom_jitter(width = 0.5)
+
+bad_fit <- filter(glance, r.squared < 0.25)
+
+gapminder %>% 
+  semi_join(bad_fit, by = "country") %>% 
+  ggplot(aes(year, lifeExp, color = country)) +
+  geom_line()
+# We see two main effects here: the tragedies of the HIV/AIDS epidemic and the Rwandan genocide.
+```
+
