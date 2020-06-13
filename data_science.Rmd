@@ -3583,3 +3583,30 @@ mtcars %>%
   unnest() # unnest(p, q), or unnest(c(p, q))
 ```
 
+### From a named list
+
+```{r named list}
+x <- list(
+  a = 1:5,
+  b = 3:4, 
+  c = 5:6
+) 
+
+df <- enframe(x)
+df
+
+# Now if you want to iterate over names and values in parallel, you can use map2():
+df %>% 
+  mutate(
+    smry = map2_chr(name, value, ~ str_c(.x, ": ", .y[1]))
+  )
+
+mtcars %>% 
+  group_by(cyl) %>% 
+  summarise_each(funs(mean, median))
+mtcars %>% 
+  group_by(cyl) %>% 
+  summarise_each(funs(list))
+?summarise_each
+```
+
