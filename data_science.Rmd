@@ -3510,3 +3510,29 @@ tribble(
 # You simplify the list-column back down to a data frame or atomic vector, as described in Simplifying list-columns.
 ```
 
+## Creating list-columns
+
+1. With tidyr::nest() to convert a grouped data frame into a nested data frame where you have list-column of data frames.
+
+2. With mutate() and vectorized functions that return a list.
+
+3. With summarise() and summary functions that return multiple results.
+
+Alternatively, you might create them from a named list, using tibble::enframe().
+
+Generally, when creating list-columns, you should make sure they’re homogeneous: each element should contain the same type of thing.
+
+### With nesting
+
+```{r nest}
+# In a nested data frame each row is a meta-observation: the other columns give variables that define the observation, and the list-column of data frames gives the individual observations that make up the meta-observation.
+
+# When applied to a grouped data frame, nest() keeps the grouping columns as is, and bundles everything else into the list-column:
+gapminder %>% 
+  group_by(country, continent) %>% 
+  nest()
+# You can also use it on an ungrouped data frame, specifying which columns you want to nest:
+gapminder %>% 
+  nest(year:gdpPercap) # what kept in the nested list-column
+```
+
