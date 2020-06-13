@@ -3564,3 +3564,22 @@ sim %>%
   mutate(sims = invoke_map(f, params, n = 10))
 ```
 
+### From multivalued summaries
+
+```{r multivalued summary}
+# One restriction of summarise() is that it only works with summary functions that return a single value. That means that you can’t use it with functions like quantile() that return a vector of arbitrary length:
+mtcars %>% 
+  group_by(cyl) %>% 
+  summarise(q = quantile(mpg))
+# wrap the result in a list:
+mtcars %>% 
+  group_by(cyl) %>% 
+  summarise(q = list(quantile(mpg)))
+
+probs <- c(0.01, 0.25, 0.5, 0.75, 0.99)
+mtcars %>% 
+  group_by(cyl) %>% 
+  summarise(p = list(probs), q = list(quantile(mpg, probs))) %>% 
+  unnest() # unnest(p, q), or unnest(c(p, q))
+```
+
