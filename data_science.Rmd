@@ -3671,3 +3671,14 @@ df2 %>%
 2. broom::tidy(model) returns a row for each coefficient in the model. Each column gives information about the estimate or its variability.
 
 3. broom::augment(model, data) returns a row for each row in data, adding extra values like residuals, and influence statistics.
+
+**Communicate**
+
+# R Markdown
+
+*R Markdown Cheat Sheet: Help > Cheatsheets > R Markdown Cheat Sheet,
+
+*R Markdown Reference Guide: Help > Cheatsheets > R Markdown Reference Guide.
+
+Both cheatsheets are also available at http://rstudio.com/cheatsheets.
+
