@@ -3640,3 +3640,27 @@ df %>% mutate(
 )
 ```
 
+### Unnesting
+
+```{r unnest}
+# unnest() works by repeating the regular columns once for each element of the list-column.
+tibble(x = 1:2, y = list(1:4, 1)) %>% unnest(y)
+
+# This means that you can’t simultaneously unnest two columns that contain different numbers of elements:
+df1 <- tribble(
+  ~x, ~y,           ~z,
+   1, c("a", "b"), 1:2,
+   2, "c",           3
+)
+df1 %>% 
+  unnest(y, z)
+
+df2 <- tribble(
+  ~x, ~y,           ~z,
+   1, "a",         1:2,  
+   2, c("b", "c"),   3
+)
+df2 %>% 
+  unnest(y, z)
+```
+
