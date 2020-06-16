@@ -22,6 +22,7 @@ library(lubridate)
 library(magrittr)
 library(splines)
 library(gapminder)
+library(ggrepel)
 ```
 
 ```{r data load}
@@ -3809,5 +3810,83 @@ ggplot(df, aes(x, y)) +
   )
 ?plotmath
 demo(plotmath)
+```
+
+## Annotations
+
+```{r annotation}
+# 1. you might have a tibble that provides labels. The plot below illustrates a useful approach: pull out the most efficient car in each class with dplyr, and then label it on the plot:
+best_in_class <- mpg %>%
+  group_by(class) %>%
+  filter(row_number(desc(hwy)) == 1) # 1st in each class
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(aes(color = class)) +
+  geom_text(aes(label = model), data = best_in_class)
+
+# This is hard to read because the labels overlap with each other, and with the points. We can make things a little better by switching to geom_label() which draws a rectangle behind the text. We also use the nudge_y parameter to move the labels slightly above the corresponding points:
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(aes(color = class)) +
+  geom_label(aes(label = model), data = best_in_class, nudge_y = 2, alpha = 0.5)
+
+#  we can use the ggrepel package by Kamil Slowikowski. This useful package will automatically adjust labels so that they don’t overlap:
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(aes(color = class)) +
+  geom_point(size = 3, shape = 1, data = best_in_class) + # add a second layer of large, hollow points to highlight the labelled points
+  ggrepel::geom_label_repel(aes(label = model), data = best_in_class)
+
+# You can sometimes use the same idea to replace the legend with labels placed directly on the plot. theme(legend.position = "none") turns the legend off
+class_avg <- mpg %>%
+  group_by(class) %>%
+  summarise(
+    displ = median(displ),
+    hwy = median(hwy)
+  )
+
+ggplot(mpg, aes(displ, hwy, color = class)) + # color as global aes
+  ggrepel::geom_label_repel(aes(label = class),
+    data = class_avg,
+    size = 6, # font size
+    label.size = 0, # boundary width of rectangle
+    segment.color = NA
+  ) +
+  geom_point() +
+  theme(legend.position = "none")
+
+# Alternatively, you might just want to add a single label to the plot, but you’ll still need to create a data frame.
+# Often, you want the label in the corner of the plot, so it’s convenient to create a new data frame using summarise() to compute the maximum values of x and y.
+label <- mpg %>%
+  summarise(
+    displ = max(displ),
+    hwy = max(hwy),
+    label = "Increasing engine size is \nrelated to decreasing fuel economy."
+  )
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  geom_text(aes(label = label), data = label, vjust = "top", hjust = "right") # "top" "center" "bottom" "left" "center" "right"
+
+# If you want to place the text exactly on the borders of the plot, you can use +Inf and -Inf. Since we’re no longer computing the positions from mpg, we can use tibble() to create the data frame:
+label <- tibble(
+  displ = Inf,
+  hwy = Inf,
+  label = "Increasing engine size is \nrelated to decreasing fuel economy."
+)
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  geom_text(aes(label = label), data = label, vjust = "top", hjust = "right")
+
+# use stringr::str_wrap() to automatically add line breaks, given the number of characters you want per line:
+"Increasing engine size is related to decreasing fuel economy." %>%
+  stringr::str_wrap(width = 20) %>%
+  writeLines()
+"Increasing engine size is related to decreasing fuel economy." %>%
+  stringr::str_wrap(width = 40) %>%
+  writeLines()
+
+# Use geom_hline() and geom_vline() to add reference lines. make them thick (size = 2) and white (colour = white), and draw them underneath the primary data layer. That makes them easy to see, without drawing attention away from the data.
+# Use geom_rect() to draw a rectangle around points of interest. The boundaries of the rectangle are defined by aesthetics xmin, xmax, ymin, ymax.
+# Use geom_segment() with the arrow argument to draw attention to a point with an arrow. Use aesthetics x and y to define the starting location, and xend and yend to define the end location.
 ```
 
