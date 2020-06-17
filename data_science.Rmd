@@ -3947,3 +3947,62 @@ ggplot(mpg, aes(displ, hwy)) +
   guides(color = guide_legend(nrow = 1, override.aes = list(size = 4)))
 ```
 
+### Replacing a scale
+
+```{r replace scale}
+ggplot(diamonds, aes(carat, price)) +
+  geom_bin2d()
+
+ggplot(diamonds, aes(log10(carat), log10(price))) +
+  geom_bin2d()
+# However, the disadvantage of this transformation is that the axes are now labelled with the transformed values, making it hard to interpret the plot. Instead of doing the transformation in the aesthetic mapping, we can instead do it with the scale. This is visually identical, except the axes are labelled on the original data scale.
+ggplot(diamonds, aes(carat, price)) +
+  geom_bin2d() + 
+  scale_x_log10() + 
+  scale_y_log10()
+
+# Another scale that is frequently customised is color. The default categorical scale picks colors that are evenly spaced around the color wheel. Useful alternatives are the ColorBrewer scales which have been hand tuned to work better for people with common types of colour blindness.
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(aes(color = drv))
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(aes(color = drv)) +
+  scale_color_brewer(palette = "Set1")
+
+# If there are just a few colors, you can add a redundant shape mapping. This will also help ensure your plot is interpretable in black and white.
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(aes(color = drv, shape = drv)) +
+  scale_colour_brewer(palette = "Set1")
+
+# The ColorBrewer scales are documented online at http://colorbrewer2.org/ and made available in R via the RColorBrewer package.
+
+# When you have a predefined mapping between values and colors, use scale_color_manual(). e.g., if we map presidential party to color, we want to use the standard mapping of red for Republicans and blue for Democrats:
+presidential %>%
+  mutate(id = 33 + row_number()) %>%
+  ggplot(aes(start, id, color = party)) +
+  geom_point() +
+  geom_segment(aes(xend = end, yend = id)) +
+  scale_x_date(NULL, breaks = presidential$start, date_labels = "'%y") +
+  scale_color_manual(values = c(Republican = "red", Democratic = "blue"))
+
+# For continuous color, you can use the built-in scale_color_gradient() or scale_fill_gradient(). If you have a diverging scale, you can use scale_color_gradient2(). That allows you to give, e.g., positive and negative values different colors. That’s sometimes also useful if you want to distinguish points above or below the mean.
+
+# Another option is scale_color_viridis() provided by the viridis package. It’s a continuous analog of the categorical ColorBrewer scales.
+df <- tibble(
+  x = rnorm(10000),
+  y = rnorm(10000)
+)
+ggplot(df, aes(x, y)) +
+  geom_hex() +
+  coord_fixed() # x:y = 1:1
+
+ggplot(df, aes(x, y)) +
+  geom_hex() +
+  viridis::scale_fill_viridis() +
+  coord_fixed()
+
+ggplot(diamonds, aes(carat, price)) +
+  geom_point(aes(color = cut), alpha = 1/20) +
+  guides(color = guide_legend(ncol = 1, override.aes = list(size = 3, alpha = 1)))
+```
+
