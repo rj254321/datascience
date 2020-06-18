@@ -4072,3 +4072,22 @@ ggplot(mpg, aes(displ, hwy)) +
   theme_void()
 ```
 
+## Saving your plots
+
+```{r save plot}
+# ggsave() will save the most recent plot to disk:
+ggplot(mpg, aes(displ, hwy)) + geom_point()
+ggsave("my-plot.pdf")
+```
+
+### Figure sizing
+
+There are five main options that control figure sizing: fig.width, fig.height, fig.asp, out.width and out.height. there are two sizes (the size of the figure created by R and the size at which it is inserted in the output document), and multiple ways of specifying the size (i.e., height, width, and aspect ratio: pick two of three).
+
+### Other important options
+
+When mingling code and text, recommend setting fig.show = "hold" so that plots are shown after the code. This has the pleasant side effect of forcing you to break up large blocks of code with their explanations.
+
+To add a caption to the plot, use fig.cap. In R Markdown this will change the figure from inline to “floating”.
+
+The chunk label is used to generate the file name of the graphic on disk, so naming your chunks makes it much easier to pick out plots and reuse in other circumstances.
