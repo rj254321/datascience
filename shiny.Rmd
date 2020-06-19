@@ -1,0 +1,20 @@
+---
+title: "shiny"
+author: "rj2543"
+date: "6/18/2020"
+output: html_document
+runtime: shiny
+---
+
+```{r, echo=FALSE}
+library(shiny)
+
+# use the “input” functions to add interactive components to the document:
+textInput("name", "What is your name?")
+numericInput("age", "How old are you?", NA, min = 0, max = 150)
+
+#  then refer to the values with input$name and input$age, and the code that uses them will be automatically re-run whenever they change.
+
+# shiny interactions occur on the server-side. This means that you can write interactive apps without knowing JavaScript, but you need a server to run them on. This introduces a logistical issue: Shiny apps need a Shiny server to be run online. When you run shiny apps on your own computer, shiny automatically sets up a shiny server for you, but you need a public facing shiny server if you want to publish this sort of interactivity online. That’s the fundamental trade-off of shiny: you can do anything in a shiny document that you can do in R, but it requires someone to be running R.
+```
+
